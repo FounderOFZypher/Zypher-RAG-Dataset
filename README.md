@@ -1,107 +1,138 @@
-# Zypher Knowledge Base — LLM Fine-Tuning
+# Zypher Training Data — Custom Chatbot & Advanced Fine-Tuning
 
-Fine-tune a language model on the Zypher enterprise RAG / GraphRAG knowledge base using LoRA supervised fine-tuning (SFT).
+Build your **own chatbot from scratch** or fine-tune a pretrained model on a **massively expanded** knowledge corpus (~1000× the original seed data).
+
+## What's included
+
+| Layer | Description |
+|-------|-------------|
+| **Corpus generator** | Produces ~112k knowledge files across 30 categories and 15 document types |
+| **Advanced dataset prep** | 10+ task types: multi-turn, chain-of-thought, tool calling, RAG, code gen/review |
+| **From-scratch chatbot** | Custom BPE tokenizer + decoder-only Transformer + pretrain + SFT + chat CLI |
+| **HF fine-tuning** | Optional LoRA/QLoRA path with Qwen/Llama base models |
 
 ## Project structure
 
 ```
 .
-├── knowledge-base/          # Source markdown chunks (167 documents)
+├── chatbot/                      # Your from-scratch chatbot
+│   ├── cli.py                    # train-tokenizer | pretrain | sft | chat
+│   ├── model.py                  # Decoder-only Transformer (RoPE, SwiGLU, RMSNorm)
+│   ├── tokenizer.py              # BPE tokenizer with chat special tokens
+│   ├── dataset.py                # Pretrain + SFT datasets
+│   ├── trainer.py                # Training loop
+│   └── inference.py              # Chat inference engine
+├── knowledge-base/               # Seed corpus (167 files)
+│   └── generated/                # Generated corpus (~112k files at scale=1000)
 ├── scripts/
-│   ├── prepare_dataset.py   # Convert chunks → train/val/test JSONL
-│   ├── train.py             # LoRA SFT training with Hugging Face TRL
-│   └── infer.py             # Run inference with a fine-tuned adapter
+│   ├── generate_corpus.py        # Mass corpus generator
+│   ├── prepare_advanced_dataset.py  # Advanced multi-task JSONL builder
+│   ├── prepare_dataset.py        # Original simple prep (seed only)
+│   ├── train.py                  # HuggingFace LoRA training
+│   └── infer.py                  # HF inference
 ├── config/
-│   └── training.yaml        # Model, LoRA, and training hyperparameters
-├── data/                    # Generated datasets (gitignored)
-└── outputs/                 # Checkpoints and adapters (gitignored)
+│   ├── chatbot.yaml              # From-scratch model & training config
+│   ├── corpus_generation.yaml    # Corpus scale & categories
+│   └── training.yaml             # HuggingFace LoRA config
+└── data/advanced/                # Generated training data (gitignored)
 ```
 
-## Quick start
-
-### 1. Install dependencies
-
-Requires Python 3.10+ and a CUDA GPU (recommended: 16 GB+ VRAM for QLoRA).
+## Quick start — full pipeline
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-```
 
-### 2. Prepare the dataset
+# 1. Generate ~112k knowledge files (use SCALE=10 for a quick smoke test)
+make generate              # SCALE=1000 default
+# make generate-smoke      # SCALE=10 → ~1,125 files
 
-Converts knowledge-base markdown into chat-format JSONL with task types including FAQ, documentation, architecture decisions, code reviews, incident reports, and support tickets.
+# 2. Build advanced training data (target: 500k–1M+ examples)
+make prepare-advanced
 
-```bash
-make prepare
-# or
-python scripts/prepare_dataset.py --kb-dir knowledge-base --output-dir data
-```
+# 3a. Train YOUR chatbot from scratch
+make train-scratch
+make chat
 
-Outputs:
-
-- `data/train.jsonl`
-- `data/val.jsonl`
-- `data/test.jsonl`
-- `data/dataset_stats.json`
-
-### 3. Train
-
-Default base model: [Qwen/Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct) with 4-bit QLoRA.
-
-```bash
+# 3b. OR fine-tune a pretrained model with LoRA
 make train
-# or
-python scripts/train.py --config config/training.yaml
 ```
 
-Edit `config/training.yaml` to change the base model, LoRA rank, learning rate, epochs, or batch size.
+## Corpus scale
 
-### 4. Inference
+| `SCALE` | Generated files | Training examples (approx.) |
+|---------|-----------------|----------------------------|
+| 10 | ~1,125 | ~8,000 |
+| 100 | ~11,250 | ~80,000 |
+| 1000 | ~112,500 | ~800,000+ |
 
 ```bash
-python scripts/infer.py \
-  --base-model Qwen/Qwen2.5-1.5B-Instruct \
-  --adapter outputs/zyphersft/final \
-  --question "How does Zypher use GraphRAG for architectural reasoning?"
+SCALE=1000 make generate
+python3 scripts/prepare_advanced_dataset.py
 ```
 
-## Training data format
+## Advanced training task types
 
-Each JSONL row uses the chat messages format expected by TRL `SFTTrainer`:
+The advanced dataset builder creates multiple examples per knowledge file:
 
-```json
-{
-  "messages": [
-    {"role": "system", "content": "You are Zypher..."},
-    {"role": "user", "content": "What is RAG for code?"},
-    {"role": "assistant", "content": "RAG for code enhances LLMs by..."}
-  ],
-  "metadata": {
-    "source": "CHUNK-00000-....md",
-    "chunk_ids": ["CHUNK-00000"],
-    "task_type": "faq"
-  }
-}
+- `faq` / `documentation` — single-turn Q&A
+- `multi_turn_dialogue` — follow-up conversations
+- `chain_of_thought` — reasoning with `<|think|>` blocks
+- `tool_calling` — simulated tool use with `<|tool|>` / `<|tool_result|>`
+- `rag_with_context` — context-grounded answers
+- `code_generation` / `code_review` — code tasks from walkthroughs
+
+## From-scratch chatbot
+
+### Architecture (default ~85M parameters)
+
+- Decoder-only Transformer
+- RoPE positional encoding
+- RMSNorm + SwiGLU FFN
+- BPE tokenizer with chat markers: `<|user|>`, `<|assistant|>`, `<|tool|>`, etc.
+
+Edit `config/chatbot.yaml` to scale `d_model`, `n_layers`, and `vocab_size`.
+
+### Training stages
+
+```bash
+# Stage 1: Train tokenizer on full corpus
+python3 -m chatbot.cli train-tokenizer --corpus-glob "knowledge-base/**/*.md"
+
+# Stage 2: Pretrain on raw text
+python3 -m chatbot.cli pretrain --data data/advanced/pretrain.txt --max-steps 50000
+
+# Stage 3: Supervised fine-tune on chat JSONL
+python3 -m chatbot.cli sft \
+  --data data/advanced/train.jsonl \
+  --checkpoint outputs/pretrain/checkpoint-final \
+  --max-steps 30000
+
+# Stage 4: Chat
+python3 -m chatbot.cli chat --checkpoint outputs/sft/checkpoint-final
 ```
 
-## Hardware notes
+## HuggingFace fine-tuning (alternative path)
 
-| Setup | Base model | Notes |
-|-------|------------|-------|
-| 8 GB GPU | `Qwen/Qwen2.5-0.5B-Instruct` | Reduce `max_seq_length` to 1024 |
-| 16 GB GPU | `Qwen/Qwen2.5-1.5B-Instruct` | Default config |
-| 24 GB+ GPU | `Qwen/Qwen2.5-7B-Instruct` | Set `load_in_4bit: true` |
+Uses `data/advanced/train.jsonl` after running `make prepare-advanced`. Update `config/training.yaml`:
 
-For CPU-only smoke tests, set `load_in_4bit: false` in `config/training.yaml` and use a very small model — full training on CPU is not practical.
+```yaml
+data:
+  train_file: data/advanced/train.jsonl
+  val_file: data/advanced/val.jsonl
+```
+
+## Hardware recommendations
+
+| Path | GPU | Notes |
+|------|-----|-------|
+| From-scratch (default config) | 16 GB+ | ~85M params, feasible on single GPU |
+| From-scratch (large) | 40 GB+ | Increase `n_layers` / `d_model` in chatbot.yaml |
+| HF QLoRA 1.5B | 16 GB | Default training.yaml |
+| HF QLoRA 7B | 24 GB+ | Change model name |
 
 ## Customization
 
-- **Different base model**: Update `model.name` in `config/training.yaml`. Adjust `lora.target_modules` if needed for non-LLaMA/Qwen architectures.
-- **More data**: Add markdown chunks under `knowledge-base/` and re-run `make prepare`.
-- **Experiment tracking**: Uncomment `wandb` in `requirements.txt` and set `training.report_to: wandb`.
-
-## Source data
-
-The `knowledge-base/` directory contains production-ready Zypher documentation covering RAG, GraphRAG, agentic workflows, architecture decisions, code reviews, incidents, and operational runbooks. The preparation script groups related chunks (e.g., ADR context/decision/consequences) into composite training examples.
+- **More categories**: Edit `scripts/corpus_templates.py` and `config/corpus_generation.yaml`
+- **Your own chatbot persona**: Change `system_prompt` in `config/chatbot.yaml`
+- **Add knowledge**: Drop markdown into `knowledge-base/` and re-run `make pipeline`

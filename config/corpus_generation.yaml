@@ -1,0 +1,65 @@
+# Corpus generation settings — default targets ~1000x expansion over seed KB
+
+seed_dir: knowledge-base
+output_dir: knowledge-base/generated
+
+# scale=1000 targets ~112k generated files (1000x the original ~112 seed topics×types)
+scale: 1000
+
+# Per-template variation count (paraphrases, difficulty shifts, code variants)
+variations_per_doc: 12
+
+# Cap files per category (0 = unlimited)
+max_files_per_category: 0
+
+categories:
+  - rag
+  - graphrag
+  - agentic
+  - chunking
+  - embeddings
+  - vector_stores
+  - retrieval
+  - indexing
+  - security
+  - observability
+  - kubernetes
+  - api_design
+  - python
+  - typescript
+  - rust
+  - go
+  - sql
+  - testing
+  - ci_cd
+  - architecture
+  - incidents
+  - code_review
+  - debugging
+  - performance
+  - data_quality
+  - mlops
+  - fine_tuning
+  - prompt_engineering
+  - tool_use
+  - memory
+
+document_types:
+  - guide
+  - tutorial
+  - faq
+  - troubleshooting
+  - api_reference
+  - code_walkthrough
+  - architecture_decision
+  - runbook
+  - deep_dive
+  - comparison
+  - best_practices
+  - anti_patterns
+  - cheat_sheet
+  - interview_prep
+  - case_study
+
+write_catalog: true
+parallel_workers: 4

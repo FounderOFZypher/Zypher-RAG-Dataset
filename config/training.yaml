@@ -17,8 +17,8 @@ lora:
     - down_proj
 
 data:
-  train_file: data/train.jsonl
-  val_file: data/val.jsonl
+  train_file: data/advanced/train.jsonl
+  val_file: data/advanced/val.jsonl
 
 training:
   output_dir: outputs/zyphersft

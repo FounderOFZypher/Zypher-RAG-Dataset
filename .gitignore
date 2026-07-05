@@ -16,6 +16,9 @@ mlruns/
 *.bin
 *.safetensors
 
+# Generated corpus (regenerate with `make generate`)
+knowledge-base/generated/
+
 # OS / editor
 .DS_Store
 .idea/
