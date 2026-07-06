@@ -45,10 +45,14 @@ The following are downloaded at runtime and subject to their own licenses:
 | `poolside/Laguna-XS-2.1` | Custom HF license | LLM — accept terms on Hugging Face before use |
 | PyTorch, transformers, chromadb | Various open source | See root `NOTICE` |
 
-## Verification
+## Premium distributable corpus
 
-Run the distribution audit before any commercial release:
+Streaming-generated documents in `knowledge-base/distributable/` are **original synthetic**
+content for the $1000+ premium RAG dataset. Generation uses in-repo templates only.
 
-```bash
-make audit-distribution
-```
+| Tier | Multiplier | Command |
+|------|------------|---------|
+| Hyper | 100,000,000,000× | `make product-hyper` |
+
+Estimated document capacity exceeds 600 trillion unique combinations (procedural).
+Run on Vast.ai for uncapped generation.

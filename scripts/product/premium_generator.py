@@ -1,0 +1,213 @@
+"""Premium distributable document generator — original synthetic RAG corpus."""
+
+from __future__ import annotations
+
+import hashlib
+import sys
+from collections.abc import Iterator
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parent.parent.parent
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from brain.types import Document
+from code_snippets import CODE_SNIPPETS, DEFAULT_CODE_LANGS
+from corpus_templates import TOPICS, Topic
+from mega_scale import estimate_documents, iter_all_topics, resolve_mega_tier
+
+PREMIUM_DOC_TYPES = (
+    "documentation", "guide", "tutorial", "faq", "api_reference", "runbook",
+    "architecture_decision", "code_walkthrough", "best_practices", "benchmark",
+    "evaluation", "troubleshooting",
+)
+
+PREMIUM_SECTIONS: dict[str, list[str]] = {
+    "documentation": ["Executive Summary", "Architecture", "Implementation", "Operations", "Security", "Metrics"],
+    "guide": ["Overview", "Prerequisites", "Step-by-Step", "Validation", "Production Rollout", "Troubleshooting"],
+    "tutorial": ["Learning Objectives", "Environment Setup", "Core Walkthrough", "Exercises", "Solution", "Next Steps"],
+    "faq": ["Question", "Short Answer", "Detailed Explanation", "When To Apply", "Anti-Patterns", "References"],
+    "api_reference": ["Endpoint Overview", "Authentication", "Request Schema", "Response Schema", "Error Codes", "Examples"],
+    "runbook": ["Trigger Conditions", "Severity", "Immediate Actions", "Escalation", "Recovery", "Post-Incident"],
+    "architecture_decision": ["Context", "Options", "Decision", "Consequences", "Review Schedule", "Stakeholders"],
+    "code_walkthrough": ["Problem Statement", "Design", "Implementation", "Testing Strategy", "Deployment", "Monitoring"],
+    "best_practices": ["Principles", "Recommended Patterns", "Common Mistakes", "Checklist", "Examples", "Metrics"],
+    "benchmark": ["Methodology", "Dataset", "Metrics", "Results", "Comparison", "Recommendations"],
+    "evaluation": ["Rubric", "Gold Answer", "Acceptable Answer", "Poor Answer", "Scoring", "Calibration"],
+    "troubleshooting": ["Symptoms", "Diagnostics", "Root Causes", "Resolution", "Prevention", "Verification"],
+}
+
+OPENERS = (
+    "In enterprise Zypher deployments,",
+    "For production-grade RAG systems,",
+    "When scaling to multi-tenant workloads,",
+    "Under strict latency and compliance requirements,",
+    "During platform modernization initiatives,",
+    "For security-sensitive code intelligence pipelines,",
+)
+
+LANGUAGE_MAP = {
+    "python": "python", "java": "java", "javascript": "javascript", "typescript": "typescript",
+    "go": "go", "rust": "rust", "sql": "sql", "postgresql": "sql",
+}
+
+
+def estimate_premium_documents(
+    categories: list[str],
+    mega_multiplier: int,
+    scale: int = 10_000,
+    variations: int = 24,
+    doc_types: int | None = None,
+    base_topics: int | None = None,
+) -> int:
+    dt = doc_types or len(PREMIUM_DOC_TYPES)
+    base = base_topics if base_topics is not None else len([t for t in TOPICS if t.category in categories])
+    return estimate_documents(categories, dt, variations, scale, mega_multiplier, base)
+
+
+def _pascal(text: str) -> str:
+    return "".join(p.capitalize() for p in text.replace("-", "_").split("_") if p)
+
+
+def _render_code(topic: Topic, variant: int) -> str:
+    lang = LANGUAGE_MAP.get(topic.category, "python")
+    if lang not in CODE_SNIPPETS:
+        lang = DEFAULT_CODE_LANGS[variant % len(DEFAULT_CODE_LANGS)]
+    template = CODE_SNIPPETS[lang]
+    name = _pascal(topic.slug[:40])
+    return template.format(
+        class_name=name,
+        interface_name=name,
+        function_name=f"handle{name}",
+        table_name=f"{topic.category}_{variant % 10_000}",
+        service_name=f"{topic.category}-svc",
+        docstring=topic.title[:120],
+        topic=topic.slug,
+        variant=variant,
+    )
+
+
+def _section_body(section: str, topic: Topic, doc_type: str, variant: int) -> str:
+    opener = OPENERS[variant % len(OPENERS)]
+    kw = ", ".join(topic.keywords[:5])
+    recall = 0.68 + (variant % 20) * 0.015
+    p95 = 85 + (variant % 50) * 8
+    return (
+        f"{opener} the **{section}** layer for `{topic.title}` requires explicit engineering "
+        f"for {kw} at **{topic.difficulty}** complexity (variant {variant}).\n\n"
+        f"**Design requirements:**\n"
+        f"- Define SLOs: p95 latency ≤ {p95}ms, availability ≥ 99.9%, retrieval recall@10 ≥ {recall:.2f}\n"
+        f"- Add structured logging, distributed tracing, and audit trails for all write paths\n"
+        f"- Version schemas; use feature flags for rollout; document rollback procedures\n"
+        f"- Validate with integration tests and chaos drills before production promotion\n\n"
+        f"**Zypher note:** Ground all agent responses in indexed context; never rely on uncited model knowledge.\n"
+        f"**License:** Apache-2.0 · **Origin:** Zypher premium synthetic corpus · **Type:** {doc_type}"
+    )
+
+
+def build_premium_body(topic: Topic, doc_type: str, variant: int) -> str:
+    title = f"{topic.title} — {doc_type.replace('_', ' ').title()} (v{variant:04d})"
+    sections = PREMIUM_SECTIONS.get(doc_type, PREMIUM_SECTIONS["guide"])
+    parts = [f"# {title}\n"]
+    for section in sections:
+        parts.append(f"\n## {section}\n\n{_section_body(section, topic, doc_type, variant)}")
+    if doc_type in ("code_walkthrough", "tutorial", "api_reference", "guide", "best_practices"):
+        parts.append(f"\n## Reference Implementation\n\n```\n{_render_code(topic, variant)}\n```")
+    if doc_type == "faq":
+        parts.append(
+            f"\n\n**Answer:** {topic.title} in Zypher requires rigorous indexing, graph linking, "
+            f"and evaluation. Variant {variant} targets {topic.hub or topic.category} with "
+            f"measurable recall and faithfulness thresholds."
+        )
+    if doc_type == "benchmark":
+        parts.append(
+            f"\n\n| Metric | Target |\n|--------|--------|\n"
+            f"| recall@10 | ≥ {0.68 + (variant % 20) * 0.015:.2f} |\n"
+            f"| faithfulness | ≥ 0.85 |\n| p95 (ms) | ≤ {85 + (variant % 50) * 8} |"
+        )
+    return "\n".join(parts)
+
+
+def build_premium_metadata(
+    topic: Topic,
+    doc_type: str,
+    variant: int,
+    scale: int,
+    related_ids: list[str] | None = None,
+) -> dict[str, Any]:
+    doc_id = hashlib.sha1(f"premium:{topic.slug}:{doc_type}:{variant}:{scale}".encode()).hexdigest()[:16]
+    doc_id = f"DIST-{doc_id.upper()}"
+    return {
+        "id": doc_id,
+        "title": f"{topic.title} — {doc_type.replace('_', ' ').title()} (v{variant:04d})",
+        "category": topic.category,
+        "doc_type": doc_type,
+        "hub": topic.hub or topic.category,
+        "tags": list(dict.fromkeys([topic.category, doc_type, topic.difficulty, "premium", "distributable"])),
+        "difficulty": topic.difficulty,
+        "related": related_ids or [],
+        "license": "Apache-2.0",
+        "origin": "zypher_premium_synthetic",
+        "variant": variant,
+    }
+
+
+def format_premium_markdown(meta: dict[str, Any], body: str) -> str:
+    import yaml
+    front = yaml.safe_dump(meta, sort_keys=False).strip()
+    return f"---\n{front}\n---\n\n{body}"
+
+
+@dataclass
+class PremiumGenerationStats:
+    documents: int = 0
+    chunks: int = 0
+    edges: int = 0
+    bytes_written: int = 0
+
+
+def iter_premium_documents(
+    categories: list[str],
+    mega_multiplier: int,
+    scale: int = 10_000,
+    variations: int = 24,
+    max_documents: int = 0,
+    seed_multiplier: int = 1,
+) -> Iterator[tuple[Document, dict[str, Any]]]:
+    """Yield premium Document objects procedurally — never loads all into memory."""
+    tier = resolve_mega_tier(mega_multiplier)
+    effective_variants = max(1, int(variations * scale / 1000) * tier.variant_multiplier * seed_multiplier)
+    hub_recent: dict[str, list[str]] = {}
+    count = 0
+
+    for topic in iter_all_topics(TOPICS, categories, mega_multiplier):
+        for doc_type in PREMIUM_DOC_TYPES:
+            for variant in range(effective_variants):
+                if max_documents and count >= max_documents:
+                    return
+                hub = topic.hub or topic.category
+                related = hub_recent.get(hub, [])[-5:]
+                meta = build_premium_metadata(topic, doc_type, variant, scale, related)
+                body = build_premium_body(topic, doc_type, variant)
+                path = (
+                    f"knowledge-base/distributable/{topic.category}/{doc_type}/"
+                    f"{meta['id'].lower()}_{topic.slug[:48]}_v{variant:04d}.md"
+                )
+                doc = Document(
+                    doc_id=meta["id"],
+                    title=meta["title"],
+                    path=path,
+                    content=body,
+                    category=topic.category,
+                    doc_type=doc_type,
+                    hub=hub,
+                    tags=meta["tags"],
+                    related=related,
+                    relationships={"see_also": related, "depends_on": related[:2]},
+                )
+                hub_recent.setdefault(hub, []).append(meta["id"])
+                if len(hub_recent[hub]) > 20:
+                    hub_recent[hub] = hub_recent[hub][-20:]
+                yield doc, meta
+                count += 1

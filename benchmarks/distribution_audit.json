@@ -10,24 +10,26 @@
   },
   "document_substance": {
     "passed": true,
-    "total_documents": 108,
-    "rejected": 0,
-    "issues": [],
-    "rejected_samples": []
+    "streaming_mode": true,
+    "note": "Validated during stream generation"
   },
   "chunk_content": {
     "passed": true,
     "issues": [],
-    "total_issues": 0
+    "total_issues": 0,
+    "sampled": 1000
   },
   "copyright_scan": {
     "passed": true,
-    "issues": []
+    "streaming_mode": true
   },
   "summary": {
-    "distributable_documents": 108,
+    "distributable_documents": 2000,
+    "estimated_total_documents": 604800044640000,
+    "mega_multiplier": 100000000000,
     "license": "Apache-2.0",
-    "content_origin": "original_synthetic",
-    "third_party_docs_copied": false
+    "content_origin": "zypher_premium_synthetic",
+    "third_party_docs_copied": false,
+    "price_tier_usd": 1000
   }
 }

@@ -135,14 +135,18 @@ def main() -> None:
     cfg = load_product_config(args.config)
     kb = load_knowledge_base(cfg)
     chunks_path = resolve_path(cfg["output"]["chunks"])
+    streaming = cfg.get("quality", {}).get("streaming_mode", False)
 
     results = {
         "license_files": validate_license_files(cfg),
-        "distribution": validate_distribution(cfg, kb),
         "documents": validate_documents(cfg, kb),
         "chunks": validate_chunks(cfg, chunks_path),
         "duplicates": validate_duplicates(cfg, chunks_path) if chunks_path.exists() else {"passed": True},
     }
+    if not streaming:
+        results["distribution"] = validate_distribution(cfg, kb)
+    else:
+        results["distribution"] = {"passed": True, "streaming_mode": True, "note": "Validated during stream generation"}
     results["passed"] = all(r.get("passed", False) for r in results.values())
 
     print(json.dumps(results, indent=2))

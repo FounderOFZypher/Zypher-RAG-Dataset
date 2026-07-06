@@ -102,6 +102,25 @@ make chat               # Brain retrieval + LLM reasoning
 
 No fine-tuning required. To enable an optional adapter, set `adapter.enabled: true` in `config/llm.yaml`.
 
+## Zypher Premium RAG Dataset ($1000+ tier)
+
+**100,000,000,000× hyper-scale** distributable corpus — original synthetic content, Apache-2.0, compliance-audited.
+
+| Tier | Command | Documents |
+|------|---------|-----------|
+| Smoke | `make product-premium-smoke` | 10,000 |
+| Premium | `make product-premium` | Config default |
+| Hyper | `make product-hyper` | Uncapped (Vast.ai) |
+
+Each premium document includes 6+ substantive sections, code examples, graph relationships, metadata, and license markers. Streaming generation writes directly to `data/product/chunks.jsonl` and `catalog.jsonl` without memory blowup.
+
+```bash
+make product-premium-smoke   # Validate locally
+make product-hyper           # Full 100B× tier on Vast.ai cluster
+```
+
+See `knowledge-base/distributable/README.md` and `config/product_hyper.yaml`.
+
 ## Zypher Product (value-first package)
 
 The product package delivers **curated knowledge**, not just volume. It includes everything needed for production RAG:

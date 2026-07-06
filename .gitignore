@@ -19,6 +19,9 @@ mlruns/
 # Generated corpus (regenerate with `make generate`)
 knowledge-base/generated/
 
+# Premium streaming samples (regenerate with `make product-premium`)
+knowledge-base/distributable/_samples/
+
 # OS / editor
 .DS_Store
 .idea/

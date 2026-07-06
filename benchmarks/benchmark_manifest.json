@@ -1,6 +1,6 @@
 {
-  "faq_pairs": 10,
-  "retrieval_gold": 15,
-  "rag_eval": 10,
+  "faq_pairs": 20,
+  "retrieval_gold": 20,
+  "rag_eval": 20,
   "output_dir": "/workspace/benchmarks"
 }

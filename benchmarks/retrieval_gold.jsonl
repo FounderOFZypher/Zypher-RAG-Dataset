@@ -1,15 +1,20 @@
-{"query": "What is Retrieval-Augmented Generation (RAG) for code?", "relevant_doc_ids": ["CHUNK-00000"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "How does Zypher use GraphRAG for architectural reasoning?", "relevant_doc_ids": ["CHUNK-00001"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What are the benefits of Agentic RAG Workflows in Zypher?", "relevant_doc_ids": ["CHUNK-00002"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "How does Zypher ensure data quality and cleaning for code RAG?", "relevant_doc_ids": ["CHUNK-00003"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What are Zypher's advanced code chunking strategies?", "relevant_doc_ids": ["CHUNK-00004"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Lessons Learned?", "relevant_doc_ids": ["CHUNK-00126"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Reviewer Comments?", "relevant_doc_ids": ["CHUNK-00149"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Reviewer Comments?", "relevant_doc_ids": ["CHUNK-00159"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Graph Link: Service-to-Service Communication Flow (Unique 0)?", "relevant_doc_ids": ["CHUNK-00033"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Graph Link: Service-to-Service Communication Flow (Unique 1)?", "relevant_doc_ids": ["CHUNK-00043"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What documents are related to What is Retrieval-Augmented Generation (RAG) for code??", "relevant_doc_ids": ["CHUNK-00000", "CHUNK-00001", "CHUNK-00002", "CHUNK-00003", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
-{"query": "What documents are related to How does Zypher use GraphRAG for architectural reasoning??", "relevant_doc_ids": ["CHUNK-00001", "CHUNK-00000", "CHUNK-00002", "CHUNK-00003", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
-{"query": "What documents are related to What are the benefits of Agentic RAG Workflows in Zypher??", "relevant_doc_ids": ["CHUNK-00002", "CHUNK-00000", "CHUNK-00001", "CHUNK-00003", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
-{"query": "What documents are related to How does Zypher ensure data quality and cleaning for code RAG??", "relevant_doc_ids": ["CHUNK-00003", "CHUNK-00000", "CHUNK-00001", "CHUNK-00002", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
-{"query": "What documents are related to What are Zypher's advanced code chunking strategies??", "relevant_doc_ids": ["CHUNK-00004", "CHUNK-00000", "CHUNK-00001", "CHUNK-00002", "CHUNK-00003", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-D9E504509EF358F5"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-AF1CA3C63BC11A4D"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-E9AE6076D7500D43"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-3EA72950D587FD0D"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-03235C91906E6331"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-BAFCCC0E3E4CC077"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-4C27DC850356D9BB"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-20DF5082AC966E5D"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-E008758106B945DC"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-78BF86AE8E5472A7"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-C75F37CCD706020C"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-A13BDD1C0A6E4331"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-DAF15081A0C5AA39"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-02A7458B2BC6AA68"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-401388B14274BE57"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-E329E8194559FA5B"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-466E58CA693D6EF3"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-DD7AE6130489D335"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-687FCC2A3B7784E4"], "relevant_chunk_ids": [], "difficulty": "medium"}
+{"query": "What are the best practices for Graph Traversal for Dependency Analysis?", "relevant_doc_ids": ["DIST-E263263D73221255"], "relevant_chunk_ids": [], "difficulty": "medium"}

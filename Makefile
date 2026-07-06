@@ -1,7 +1,8 @@
 .PHONY: install validate generate generate-smoke generate-mega generate-ultra generate-hyper \
         prepare pipeline train-xs index chat serve platform-stats platform-index infer clean \
         product chunks deduplicate validate-product export-graph embeddings benchmarks \
-        manifest evaluate audit-distribution
+        manifest evaluate audit-distribution product-premium product-premium-smoke product-hyper \
+        stream-premium
 
 install:
 	pip install -r requirements.txt
@@ -95,3 +96,16 @@ evaluate:
 
 audit-distribution:
 	python3 scripts/product/audit_distribution.py
+
+# $1000+ Premium RAG Dataset — 100B× hyper-scale distributable corpus
+product-premium-smoke:
+	python3 scripts/product/build_premium_product.py --config config/product_hyper_smoke.yaml
+
+product-premium:
+	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml
+
+product-hyper:
+	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml --max-files 0
+
+stream-premium:
+	python3 scripts/product/stream_premium_corpus.py --config config/product_hyper.yaml

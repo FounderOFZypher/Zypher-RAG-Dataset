@@ -34,12 +34,19 @@ def main() -> None:
     cfg = load_product_config(args.config)
     kb = load_knowledge_base(cfg)
     out_cfg = cfg["output"]
-    base_dir = resolve_path(out_cfg["base_dir"])
+    gen_stats_path = resolve_path(out_cfg.get("generation_stats", ""))
+    catalog_path = resolve_path(out_cfg.get("catalog", "data/product/catalog.jsonl"))
+    streaming = cfg.get("quality", {}).get("streaming_mode", False)
+
+    gen_stats: dict = {}
+    if gen_stats_path.exists():
+        gen_stats = json.loads(gen_stats_path.read_text(encoding="utf-8"))
 
     artifacts = {
         "chunks": resolve_path(out_cfg["chunks"]),
         "graph": resolve_path(out_cfg["graph"]),
         "metadata": resolve_path(out_cfg["metadata"]),
+        "catalog": catalog_path,
         "embeddings": resolve_path(cfg["embeddings"]["output_dir"]) / "embeddings.jsonl",
     }
 
@@ -53,50 +60,78 @@ def main() -> None:
                 "bytes": path.stat().st_size,
             }
 
-    # Export document metadata index
     meta_path = resolve_path(out_cfg["metadata"])
     meta_path.parent.mkdir(parents=True, exist_ok=True)
     documents = []
-    for doc in kb.documents:
-        documents.append({
-            "doc_id": doc.doc_id,
-            "title": doc.title,
-            "category": doc.category,
-            "doc_type": doc.doc_type,
-            "tags": doc.tags,
-            "hub": doc.hub,
-            "related_count": len(doc.related),
-            "relationship_types": list(doc.relationships.keys()),
-            "source_path": doc.path,
-            "license": cfg.get("license", "Apache-2.0"),
-        })
+    if streaming and catalog_path.exists():
+        for i, rec in enumerate(iter_jsonl(catalog_path)):
+            if i >= 10_000:
+                break
+            documents.append({
+                "doc_id": rec.get("doc_id"),
+                "title": rec.get("title"),
+                "category": rec.get("category"),
+                "doc_type": rec.get("doc_type"),
+                "tags": rec.get("tags", []),
+                "hub": rec.get("hub", ""),
+                "source_path": rec.get("path"),
+                "license": cfg.get("license", "Apache-2.0"),
+            })
+    else:
+        for doc in kb.documents:
+            documents.append({
+                "doc_id": doc.doc_id,
+                "title": doc.title,
+                "category": doc.category,
+                "doc_type": doc.doc_type,
+                "tags": doc.tags,
+                "hub": doc.hub,
+                "related_count": len(doc.related),
+                "relationship_types": list(doc.relationships.keys()),
+                "source_path": doc.path,
+                "license": cfg.get("license", "Apache-2.0"),
+            })
+
+    catalog_count = count_jsonl(catalog_path) if catalog_path.exists() else len(kb.documents)
     with meta_path.open("w", encoding="utf-8") as f:
-        json.dump({"documents": documents, "count": len(documents)}, f, indent=2)
+        json.dump({
+            "documents": documents,
+            "count": catalog_count,
+            "metadata_sample_size": len(documents),
+        }, f, indent=2)
 
     files["metadata"] = {
         "path": str(meta_path.relative_to(resolve_path("."))),
         "sha256": file_sha256(meta_path),
-        "records": len(documents),
+        "records": catalog_count,
         "bytes": meta_path.stat().st_size,
     }
 
     manifest = {
         "name": cfg.get("name", "Zypher Brain Product"),
         "version": str(cfg.get("version", "1.0.0")),
+        "tier": cfg.get("tier", "standard"),
+        "price_usd": cfg.get("price_usd"),
         "license": cfg.get("license", "Apache-2.0"),
         "updated": str(cfg.get("updated", datetime.now(timezone.utc).strftime("%Y-%m-%d"))),
         "built_at": datetime.now(timezone.utc).isoformat(),
         "curated_only": cfg["quality"].get("curated_only", True),
-        "content_origin": "original_synthetic",
-        "third_party_docs_copied": False,
+        "streaming_mode": streaming,
+        "content_origin": gen_stats.get("content_origin", "original_synthetic"),
+        "third_party_docs_copied": gen_stats.get("third_party_docs_copied", False),
+        "mega_multiplier": gen_stats.get("mega_multiplier"),
+        "estimated_total_documents": gen_stats.get("estimated_total_documents"),
+        "documents_generated": gen_stats.get("documents_generated", catalog_count),
+        "chunks_generated": gen_stats.get("chunks_generated", files.get("chunks", {}).get("records")),
         "excluded_paths": [
             "knowledge-base/_excluded_from_distribution/",
             "knowledge-base/generated/",
             "knowledge-base/_seed/",
         ],
-        "documents": len(kb.documents),
+        "documents": catalog_count,
         "artifacts": files,
         "benchmarks_dir": cfg["benchmarks"]["output_dir"],
+        "generation_stats": gen_stats,
     }
 
     manifest_path = resolve_path(out_cfg["manifest"])

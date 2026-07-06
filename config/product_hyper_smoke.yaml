@@ -1,0 +1,90 @@
+# Zypher Premium RAG Dataset — local smoke test
+# Generates 10,000 premium documents for validation before Vast.ai hyper run
+
+name: Zypher Premium RAG Dataset (Smoke)
+version: 2.0.0-smoke
+tier: premium-smoke
+price_usd: 1000
+license: Apache-2.0
+updated: 2026-07-06
+
+generation:
+  mega_multiplier: 100000000000
+  scale: 10000
+  variations_per_doc: 24
+  max_files: 10000
+  sample_md_files: 500
+  sample_dir: knowledge-base/distributable/_samples
+  streaming: true
+  categories:
+    - rag
+    - graphrag
+    - agentic
+    - python
+    - kubernetes
+    - security
+    - architecture
+
+knowledge_base:
+  paths:
+    - knowledge-base
+    - knowledge-base/distributable/_samples
+  glob: "**/*.md"
+  exclude:
+    - "**/generated/**"
+    - "**/_seed/**"
+    - "**/_excluded_from_distribution/**"
+
+distribution:
+  require_kb_license: true
+  require_provenance: true
+  require_notice: true
+  forbidden_body_markers:
+    - "This document provides detailed information on"
+  min_substantive_chars: 200
+  forbidden_source_patterns:
+    - "wikipedia.org"
+    - "stackoverflow.com"
+    - "all rights reserved"
+
+quality:
+  min_chunk_chars: 40
+  max_duplicate_ratio: 0.05
+  require_metadata_fields:
+    - doc_id
+    - title
+  require_license_header: true
+  streaming_mode: true
+
+chunking:
+  max_chunk_chars: 2000
+  overlap_chars: 200
+  split_on: "## "
+
+embeddings:
+  model: sentence-transformers/all-MiniLM-L6-v2
+  output_dir: data/product/embeddings
+  batch_size: 64
+  max_chunks: 50000
+
+output:
+  base_dir: data/product
+  chunks: data/product/chunks/chunks.jsonl
+  catalog: data/product/catalog.jsonl
+  graph: data/product/graph/edges.jsonl
+  metadata: data/product/metadata/documents.json
+  manifest: data/product/manifest.json
+  generation_stats: data/product/generation_stats.json
+
+benchmarks:
+  output_dir: benchmarks
+  min_faq_pairs: 20
+  include_rag_eval: true
+  include_retrieval_gold: true
+  sample_from_catalog: 1000
+
+evaluation:
+  top_k: 8
+  min_retrieval_recall: 0.40
+  min_metadata_accuracy: 0.90
+  sample_size: 50

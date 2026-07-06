@@ -8,7 +8,16 @@ import json
 import re
 from pathlib import Path
 
-from common import extract_faq_question, load_knowledge_base, load_product_config, normalize_doc_id, normalize_id_list, resolve_path, write_jsonl
+from common import (
+    extract_faq_question,
+    iter_jsonl,
+    load_knowledge_base,
+    load_product_config,
+    normalize_doc_id,
+    normalize_id_list,
+    resolve_path,
+    write_jsonl,
+)
 
 
 def _answer_keywords(doc) -> list[str]:
@@ -76,6 +85,52 @@ def build_faq_benchmark(kb, min_pairs: int) -> list[dict]:
     return pairs
 
 
+def build_faq_from_catalog(catalog_path: Path, min_pairs: int, sample_size: int) -> list[dict]:
+    pairs: list[dict] = []
+    seen: set[str] = set()
+    for i, rec in enumerate(iter_jsonl(catalog_path)):
+        if sample_size and i >= sample_size:
+            break
+        doc_id = rec.get("doc_id", "")
+        if doc_id in seen:
+            continue
+        title = str(rec.get("title", "")).strip()
+        doc_type = rec.get("doc_type", "")
+        if doc_type == "faq" or "?" in title:
+            question = title.split("—")[0].strip() if "—" in title else title
+        else:
+            question = f"What are the best practices for {title.split('—')[0].strip()}?"
+        tags = rec.get("tags", [])
+        pairs.append({
+            "id": f"faq-{doc_id}",
+            "question": question,
+            "expected_doc_ids": [doc_id],
+            "expected_keywords": [t for t in tags[:8] if isinstance(t, str)],
+            "category": rec.get("category", ""),
+            "tags": tags,
+            "source_path": rec.get("path", ""),
+            "from_catalog": True,
+        })
+        seen.add(doc_id)
+        if len(pairs) >= min_pairs:
+            break
+    if len(pairs) < min_pairs:
+        raise SystemExit(f"Only {len(pairs)} catalog benchmark pairs; need {min_pairs}")
+    return pairs
+
+
+def build_retrieval_gold_catalog(faq_pairs: list[dict]) -> list[dict]:
+    gold: list[dict] = []
+    for pair in faq_pairs:
+        gold.append({
+            "query": pair["question"],
+            "relevant_doc_ids": pair["expected_doc_ids"],
+            "relevant_chunk_ids": [],
+            "difficulty": "medium",
+        })
+    return gold
+
+
 def build_retrieval_gold(faq_pairs: list[dict], kb) -> list[dict]:
     gold: list[dict] = []
     for pair in faq_pairs:
@@ -124,15 +179,23 @@ def main() -> None:
 
     kb = load_knowledge_base(cfg)
     min_faq = int(bench_cfg.get("min_faq_pairs", 10))
+    catalog_path = resolve_path(cfg["output"].get("catalog", "data/product/catalog.jsonl"))
 
-    faq_pairs = build_faq_benchmark(kb, min_faq)
+    if bench_cfg.get("sample_from_catalog") and catalog_path.exists():
+        sample = int(bench_cfg["sample_from_catalog"])
+        faq_pairs = build_faq_from_catalog(catalog_path, min_faq, sample)
+        gold_builder = lambda: build_retrieval_gold_catalog(faq_pairs)
+    else:
+        faq_pairs = build_faq_benchmark(kb, min_faq)
+        gold_builder = lambda: build_retrieval_gold(faq_pairs, kb)
+
     write_jsonl(out_dir / "faq_pairs.jsonl", faq_pairs)
 
     gold: list[dict] = []
     rag_eval: list[dict] = []
 
     if bench_cfg.get("include_retrieval_gold", True):
-        gold = build_retrieval_gold(faq_pairs, kb)
+        gold = gold_builder()
         write_jsonl(out_dir / "retrieval_gold.jsonl", gold)
 
     if bench_cfg.get("include_rag_eval", True):
