@@ -16,6 +16,7 @@ STEPS = [
     ("export_embeddings", "Generate embeddings"),
     ("build_benchmarks", "Build benchmark datasets"),
     ("build_manifest", "Build product manifest"),
+    ("audit_distribution", "Audit distribution compliance"),
 ]
 
 

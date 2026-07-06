@@ -108,7 +108,7 @@ The product package delivers **curated knowledge**, not just volume. It includes
 
 | Component | What you get |
 |-----------|--------------|
-| Curated knowledge base | Original `CHUNK-*.md` documents with accurate metadata |
+| Curated knowledge base | Original synthetic `CHUNK-*.md` documents (Apache-2.0) |
 | Vector-ready chunks | `data/product/chunks/chunks.jsonl` |
 | Embeddings | Pre-computed vectors + generation scripts |
 | Graph relationships | Typed edges (`depends_on`, `uses`, `see_also`, …) |
@@ -124,7 +124,9 @@ make evaluate     # Run evaluation + evidence report
 
 > The biggest challenge isn't making it big — it's making it valuable.
 
-Quality gates enforce: original content, accurate metadata, ≤5% duplication, clear Apache-2.0 licensing, and retrieval evidence.
+Quality gates enforce: original synthetic content, accurate metadata, ≤5% duplication, Apache-2.0 licensing with NOTICE file, distribution audit, and retrieval evidence.
+
+**Not included in commercial package:** placeholder stubs (`_excluded_from_distribution/`), mega generated corpus (`generated/`). See `knowledge-base/PROVENANCE.md`.
 
 See [docs/product-setup.md](docs/product-setup.md) for the full guide.
 

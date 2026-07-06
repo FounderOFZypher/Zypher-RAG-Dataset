@@ -47,6 +47,25 @@ def load_knowledge_base(cfg: dict[str, Any]) -> KnowledgeBase:
     )
 
 
+def distribution_cfg(cfg: dict[str, Any]) -> dict[str, Any]:
+    return cfg.get("distribution", {})
+
+
+def is_substantive_document(doc, dist_cfg: dict[str, Any]) -> tuple[bool, str]:
+    """Check whether a document is suitable for commercial distribution."""
+    min_chars = int(dist_cfg.get("min_substantive_chars", 60))
+    for marker in dist_cfg.get("forbidden_body_markers", []):
+        if marker in doc.content:
+            return False, f"forbidden marker: {marker[:40]}..."
+    content_lower = doc.content.lower()
+    for pattern in dist_cfg.get("forbidden_source_patterns", []):
+        if pattern.lower() in content_lower:
+            return False, f"forbidden source pattern: {pattern}"
+    if len(doc.content.strip()) < min_chars:
+        return False, f"content too short ({len(doc.content.strip())} < {min_chars} chars)"
+    return True, "ok"
+
+
 def iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
     with path.open(encoding="utf-8") as f:
         for line in f:

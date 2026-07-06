@@ -2,6 +2,20 @@
 
 All notable changes to the Zypher Brain product package are documented here.
 
+## [1.1.0] - 2026-07-06
+
+### Added
+
+- Commercial distribution compliance: `NOTICE`, `knowledge-base/LICENSE`, `PROVENANCE.md`
+- Distribution audit (`make audit-distribution`) — scans for third-party content, forbidden markers
+- Quarantined 54 non-distributable placeholder stubs to `_excluded_from_distribution/`
+- `.dockerignore` excludes generated and quarantined content from releases
+
+### Changed
+
+- Product build excludes `_excluded_from_distribution/` from commercial package
+- Documentation updated with honest content origin and licensing requirements
+
 ## [1.0.0] - 2026-07-06
 
 ### Added

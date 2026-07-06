@@ -14,6 +14,26 @@ knowledge_base:
   exclude:
     - "**/generated/**"
     - "**/_seed/**"
+    - "**/_excluded_from_distribution/**"
+
+# Commercial distribution compliance
+distribution:
+  require_kb_license: true
+  require_provenance: true
+  require_notice: true
+  # Reject placeholder stubs if they appear in distributable paths
+  forbidden_body_markers:
+    - "This document provides detailed information on"
+  # Warn on thin content below this threshold (chars, excluding frontmatter)
+  min_substantive_chars: 45
+  forbidden_source_patterns:
+    - "wikipedia.org"
+    - "stackoverflow.com"
+    - "docs.python.org"
+    - "kubernetes.io/docs"
+    - "huggingface.co/docs"
+    - "python.langchain.com"
+    - "all rights reserved"
 
 # Quality gates — builds fail if thresholds not met
 quality:

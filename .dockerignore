@@ -1,0 +1,12 @@
+# Distribution exclusions — never ship in commercial packages
+knowledge-base/generated/
+knowledge-base/_excluded_from_distribution/
+knowledge-base/_seed/
+data/
+outputs/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore

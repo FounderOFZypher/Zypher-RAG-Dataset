@@ -6,7 +6,7 @@ This guide walks through building the **value-first Zypher Brain product package
 
 | Artifact | Path | Purpose |
 |----------|------|---------|
-| Curated knowledge base | `knowledge-base/CHUNK-*.md` | Original, well-written documents |
+| Curated knowledge base | `knowledge-base/CHUNK-*.md` | Original synthetic docs (Apache-2.0) |
 | Vector-ready chunks | `data/product/chunks/chunks.jsonl` | Chunked text + metadata |
 | Embeddings | `data/product/embeddings/embeddings.jsonl` | Pre-computed vectors |
 | Graph edges | `data/product/graph/edges.jsonl` | Typed relationships |
@@ -25,8 +25,11 @@ pip install -r requirements.txt
 ## Quick build
 
 ```bash
-# Full product pipeline (chunks → dedup → validate → graph → embeddings → benchmarks → manifest)
+# Full product pipeline with distribution compliance audit
 make product
+
+# Verify commercial distribution rights before release
+make audit-distribution
 
 # Run evaluation against curated brain
 make evaluate
@@ -41,8 +44,9 @@ make validate        # Quality gate checks
 make export-graph    # Export graph relationships
 make embeddings      # Generate embeddings
 make benchmarks      # Build benchmark datasets
-make manifest        # Build product manifest
-make evaluate        # Run RAG evaluation + evidence report
+make manifest             # Build product manifest
+make audit-distribution   # Commercial distribution rights audit
+make evaluate             # Run RAG evaluation + evidence report
 ```
 
 ## Curated brain mode

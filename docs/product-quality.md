@@ -6,9 +6,10 @@ The Zypher Brain product is designed for teams paying for **value, not volume**.
 
 ### Original, well-written content
 
-- Curated `CHUNK-*.md` documents only (no synthetic mega corpus in product builds)
+- Distributable `CHUNK-*.md` documents only (see `knowledge-base/PROVENANCE.md`)
+- **Excluded:** placeholder stubs (`_excluded_from_distribution/`) and mega corpus (`generated/`)
+- Content is original synthetic documentation — not copied from third-party sources
 - Each document has a clear title, category, and tags
-- Content is structured with markdown headings for clean chunking
 
 ### Accurate metadata
 
@@ -59,9 +60,11 @@ Additional metadata exported in `data/product/metadata/documents.json`:
 
 ## What we exclude from product builds
 
-- `knowledge-base/generated/**` — procedural mega corpus
+- `knowledge-base/generated/**` — procedural mega corpus (stress testing only)
+- `knowledge-base/_excluded_from_distribution/**` — placeholder stubs (insufficient substance)
 - `**/_seed/**` — internal seed copies
-- Documents without `CHUNK-` prefix
+
+Run `make audit-distribution` before any commercial release.
 
 ## The challenge
 

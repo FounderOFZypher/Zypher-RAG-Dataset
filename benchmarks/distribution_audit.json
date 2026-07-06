@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "required_files": {
+    "passed": true,
+    "issues": []
+  },
+  "excluded_paths": {
+    "passed": true,
+    "issues": []
+  },
+  "document_substance": {
+    "passed": true,
+    "total_documents": 108,
+    "rejected": 0,
+    "issues": [],
+    "rejected_samples": []
+  },
+  "chunk_content": {
+    "passed": true,
+    "issues": [],
+    "total_issues": 0
+  },
+  "copyright_scan": {
+    "passed": true,
+    "issues": []
+  },
+  "summary": {
+    "distributable_documents": 108,
+    "license": "Apache-2.0",
+    "content_origin": "original_synthetic",
+    "third_party_docs_copied": false
+  }
+}

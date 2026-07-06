@@ -7,7 +7,7 @@ import argparse
 import json
 from pathlib import Path
 
-from common import iter_jsonl, load_knowledge_base, load_product_config, resolve_path
+from common import ROOT, iter_jsonl, load_knowledge_base, load_product_config, resolve_path
 
 
 def validate_chunks(cfg: dict, chunks_path: Path) -> dict:
@@ -65,6 +65,41 @@ def validate_documents(cfg: dict, kb) -> dict:
     }
 
 
+def validate_license_files(cfg: dict) -> dict:
+    dist_cfg = cfg.get("distribution", {})
+    issues: list[str] = []
+
+    if dist_cfg.get("require_kb_license", True):
+        if not (ROOT / "knowledge-base" / "LICENSE").exists():
+            issues.append("Missing knowledge-base/LICENSE")
+    if dist_cfg.get("require_provenance", True):
+        if not (ROOT / "knowledge-base" / "PROVENANCE").exists() and not (ROOT / "knowledge-base" / "PROVENANCE.md").exists():
+            issues.append("Missing knowledge-base/PROVENANCE.md")
+    if dist_cfg.get("require_notice", True):
+        if not (ROOT / "NOTICE").exists():
+            issues.append("Missing root NOTICE file")
+
+    return {"passed": not issues, "issues": issues}
+
+
+def validate_distribution(cfg: dict, kb) -> dict:
+    from common import distribution_cfg, is_substantive_document
+
+    dist_cfg = distribution_cfg(cfg)
+    issues: list[str] = []
+
+    for doc in kb.documents:
+        ok, reason = is_substantive_document(doc, dist_cfg)
+        if not ok:
+            issues.append(f"{doc.doc_id}: {reason}")
+
+    return {
+        "passed": not issues,
+        "rejected_documents": len(issues),
+        "issues": issues[:15],
+    }
+
+
 def validate_duplicates(cfg: dict, chunks_path: Path) -> dict:
     max_ratio = float(cfg["quality"]["max_duplicate_ratio"])
     seen: set[str] = set()
@@ -102,6 +137,8 @@ def main() -> None:
     chunks_path = resolve_path(cfg["output"]["chunks"])
 
     results = {
+        "license_files": validate_license_files(cfg),
+        "distribution": validate_distribution(cfg, kb),
         "documents": validate_documents(cfg, kb),
         "chunks": validate_chunks(cfg, chunks_path),
         "duplicates": validate_duplicates(cfg, chunks_path) if chunks_path.exists() else {"passed": True},

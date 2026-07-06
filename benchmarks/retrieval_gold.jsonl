@@ -3,11 +3,11 @@
 {"query": "What are the benefits of Agentic RAG Workflows in Zypher?", "relevant_doc_ids": ["CHUNK-00002"], "relevant_chunk_ids": [], "difficulty": "easy"}
 {"query": "How does Zypher ensure data quality and cleaning for code RAG?", "relevant_doc_ids": ["CHUNK-00003"], "relevant_chunk_ids": [], "difficulty": "easy"}
 {"query": "What are Zypher's advanced code chunking strategies?", "relevant_doc_ids": ["CHUNK-00004"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Building Code Knowledge Graphs with ASTs and Tree-sitter?", "relevant_doc_ids": ["CHUNK-00010"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about PII Redaction Strategies for Code Repositories?", "relevant_doc_ids": ["CHUNK-00063"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Graph Traversal Algorithms for Code Dependency Analysis?", "relevant_doc_ids": ["CHUNK-00011"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Automated Documentation Extraction Techniques?", "relevant_doc_ids": ["CHUNK-00022"], "relevant_chunk_ids": [], "difficulty": "easy"}
-{"query": "What does Zypher document about Handling Sensitive Information in RAG Indexes?", "relevant_doc_ids": ["CHUNK-00023"], "relevant_chunk_ids": [], "difficulty": "easy"}
+{"query": "What does Zypher document about Lessons Learned?", "relevant_doc_ids": ["CHUNK-00126"], "relevant_chunk_ids": [], "difficulty": "easy"}
+{"query": "What does Zypher document about Reviewer Comments?", "relevant_doc_ids": ["CHUNK-00149"], "relevant_chunk_ids": [], "difficulty": "easy"}
+{"query": "What does Zypher document about Reviewer Comments?", "relevant_doc_ids": ["CHUNK-00159"], "relevant_chunk_ids": [], "difficulty": "easy"}
+{"query": "What does Zypher document about Graph Link: Service-to-Service Communication Flow (Unique 0)?", "relevant_doc_ids": ["CHUNK-00033"], "relevant_chunk_ids": [], "difficulty": "easy"}
+{"query": "What does Zypher document about Graph Link: Service-to-Service Communication Flow (Unique 1)?", "relevant_doc_ids": ["CHUNK-00043"], "relevant_chunk_ids": [], "difficulty": "easy"}
 {"query": "What documents are related to What is Retrieval-Augmented Generation (RAG) for code??", "relevant_doc_ids": ["CHUNK-00000", "CHUNK-00001", "CHUNK-00002", "CHUNK-00003", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
 {"query": "What documents are related to How does Zypher use GraphRAG for architectural reasoning??", "relevant_doc_ids": ["CHUNK-00001", "CHUNK-00000", "CHUNK-00002", "CHUNK-00003", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}
 {"query": "What documents are related to What are the benefits of Agentic RAG Workflows in Zypher??", "relevant_doc_ids": ["CHUNK-00002", "CHUNK-00000", "CHUNK-00001", "CHUNK-00003", "CHUNK-00004", "CHUNK-00005", "CHUNK-00006", "CHUNK-00007", "CHUNK-00008"], "relevant_chunk_ids": [], "difficulty": "hard"}

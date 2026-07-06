@@ -1,7 +1,7 @@
 .PHONY: install validate generate generate-smoke generate-mega generate-ultra generate-hyper \
         prepare pipeline train-xs index chat serve platform-stats platform-index infer clean \
         product chunks deduplicate validate-product export-graph embeddings benchmarks \
-        manifest evaluate
+        manifest evaluate audit-distribution
 
 install:
 	pip install -r requirements.txt
@@ -92,3 +92,6 @@ manifest:
 
 evaluate:
 	python3 scripts/product/evaluate_rag.py
+
+audit-distribution:
+	python3 scripts/product/audit_distribution.py

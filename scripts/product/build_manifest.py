@@ -87,6 +87,13 @@ def main() -> None:
         "updated": str(cfg.get("updated", datetime.now(timezone.utc).strftime("%Y-%m-%d"))),
         "built_at": datetime.now(timezone.utc).isoformat(),
         "curated_only": cfg["quality"].get("curated_only", True),
+        "content_origin": "original_synthetic",
+        "third_party_docs_copied": False,
+        "excluded_paths": [
+            "knowledge-base/_excluded_from_distribution/",
+            "knowledge-base/generated/",
+            "knowledge-base/_seed/",
+        ],
         "documents": len(kb.documents),
         "artifacts": files,
         "benchmarks_dir": cfg["benchmarks"]["output_dir"],
