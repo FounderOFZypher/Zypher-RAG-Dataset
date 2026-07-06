@@ -46,16 +46,31 @@ class Trainer:
         return loss
 
     def train_loop(self, dataset: PretrainDataset | SFTDataset) -> None:
-        loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True, drop_last=True)
+        if len(dataset) == 0:
+            raise ValueError(
+                "Training dataset is empty. Run `make prepare-advanced` and check data files exist."
+            )
+
+        drop_last = len(dataset) >= self.batch_size
+        loader = DataLoader(
+            dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            drop_last=drop_last,
+        )
         self.model.train()
         step = 0
         running_loss = 0.0
+        steps_since_log = 0
 
         while step < self.max_steps:
+            epoch_batches = 0
             for batch in loader:
+                epoch_batches += 1
                 loss = self._step(batch) / self.grad_accum
                 self.scaler.scale(loss).backward()
                 running_loss += loss.item()
+                steps_since_log += 1
 
                 if (step + 1) % self.grad_accum == 0:
                     self.scaler.step(self.optimizer)
@@ -63,7 +78,7 @@ class Trainer:
                     self.optimizer.zero_grad(set_to_none=True)
 
                 if step % 50 == 0:
-                    avg = running_loss / max(1, (step % 50) + 1)
+                    avg = running_loss / max(1, steps_since_log)
                     print(f"step={step} loss={avg:.4f} perplexity={math.exp(min(avg, 20)):.2f}")
 
                 if step > 0 and step % 500 == 0:
@@ -72,6 +87,12 @@ class Trainer:
                 step += 1
                 if step >= self.max_steps:
                     break
+
+            if epoch_batches == 0:
+                raise ValueError(
+                    f"No training batches produced (dataset={len(dataset)}, batch_size={self.batch_size}). "
+                    "Lower --batch-size or add more training data."
+                )
 
         self.save_checkpoint("final")
 

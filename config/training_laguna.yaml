@@ -1,0 +1,46 @@
+# Laguna XS 2.1 — QLoRA fine-tuning on Zypher knowledge base
+# Model: https://huggingface.co/poolside/Laguna-XS-2.1
+# 33B MoE (3B active/token) · coding & agentic tasks · 262k context
+
+model:
+  name: poolside/Laguna-XS-2.1
+  load_in_4bit: true
+  trust_remote_code: true
+  use_chat_template: true
+  # flash_attention_2 if installed and GPU supports it; else sdpa
+  attn_implementation: sdpa
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  # MoE-safe: train attention + MLP linears, skip router gates
+  target_modules: all-linear
+  modules_to_save: null
+
+data:
+  train_file: data/advanced/train.jsonl
+  val_file: data/advanced/val.jsonl
+
+training:
+  output_dir: outputs/laguna-xs-2.1-sft
+  num_train_epochs: 2
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 16
+  learning_rate: 1.0e-4
+  warmup_ratio: 0.03
+  max_seq_length: 4096
+  logging_steps: 10
+  save_steps: 100
+  eval_steps: 100
+  save_total_limit: 2
+  gradient_checkpointing: true
+  packing: false
+  bf16: true
+  seed: 42
+  report_to: none
+  optim: paged_adamw_8bit
+
+# Hardware: 24 GB+ VRAM recommended (Colab A100 or L4)
+# Smaller GPU: set max_seq_length to 2048 and gradient_accumulation_steps to 32

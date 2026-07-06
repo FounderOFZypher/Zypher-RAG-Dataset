@@ -99,20 +99,18 @@ improves accuracy for dependency tracing, impact analysis, and monorepo navigati
 
 ## Current results (v0.1)
 
-Early benchmark numbers from the initial from-scratch training run (smoke corpus, ~11.7k SFT examples, default ~138M-param config):
+**Not yet trained** — the table below shows **benchmark targets** for the first training run. Update this section with real numbers after you complete Colab training.
 
-| Metric | Current (v0.1) | Target |
-|--------|----------------|--------|
-| FAQ accuracy (seed set) | **73.4%** | > 70% |
-| Validation loss (SFT) | **1.91** | < 2.0 |
-| Perplexity (pretrain) | **12.6** | < 15 |
-| Code review score | **71%** | > 70% |
-| RAG faithfulness | 68.2% | > 80% |
-| Multi-turn coherence | 64.5% | > 75% |
-| GraphRAG concept accuracy | 72.1% | > 75% |
-| Syntax-valid code generation | 79.3% | > 85% |
-
-v0.1 clears the FAQ and code-review bar; RAG faithfulness and multi-turn coherence are the main gaps planned for v1.1 evaluation work.
+| Metric | Target |
+|--------|--------|
+| FAQ accuracy (seed set) | > 70% |
+| Validation loss (SFT) | < 2.0 |
+| Perplexity (pretrain) | < 15 |
+| Code review score | > 70% |
+| RAG faithfulness | > 80% |
+| Multi-turn coherence | > 75% |
+| GraphRAG concept accuracy | > 75% |
+| Syntax-valid code generation | > 85% |
 
 ## What's included
 
@@ -150,7 +148,62 @@ v0.1 clears the FAQ and code-review bar; RAG faithfulness and multi-turn coheren
 └── data/advanced/                # Generated training data (gitignored)
 ```
 
-## Quick start — full pipeline
+## Quick start — Google Colab (free GPU, no local install)
+
+Train from scratch entirely in the cloud — nothing on your PC:
+
+1. Open **[notebooks/train_from_scratch_colab.ipynb](notebooks/train_from_scratch_colab.ipynb)** on GitHub
+2. Click **Open in Colab** (or upload the notebook to [colab.research.google.com](https://colab.research.google.com))
+3. **Runtime → Change runtime type → T4 GPU**
+4. Run all cells top to bottom
+
+Or open directly:
+
+```
+https://colab.research.google.com/github/FOUNDEROF-AIRIES-AGENT/Zypher-Training-data/blob/cursor/llm-finetune-ready-da1e/notebooks/train_from_scratch_colab.ipynb
+```
+
+The notebook clones the repo from GitHub, prepares data, trains tokenizer → pretrain → SFT, and lets you download checkpoints before the session ends.
+
+## Fine-tune Laguna XS 2.1 (Hugging Face + QLoRA)
+
+Use [poolside/Laguna-XS-2.1](https://huggingface.co/poolside/Laguna-XS-2.1) — Poolside's open coding MoE model (33B total, 3B active/token, 262k context).
+
+### Google Colab (recommended)
+
+1. Accept the model license on Hugging Face
+2. Open **[notebooks/finetune_laguna_colab.ipynb](notebooks/finetune_laguna_colab.ipynb)**
+3. Runtime → **A100** or **L4** (24 GB+ VRAM)
+4. Run all cells (includes HF login, data prep, QLoRA training)
+
+Direct link:
+
+```
+https://colab.research.google.com/github/FOUNDEROF-AIRIES-AGENT/Zypher-Training-data/blob/cursor/llm-finetune-ready-da1e/notebooks/finetune_laguna_colab.ipynb
+```
+
+### Command line
+
+```bash
+pip install -r requirements.txt
+huggingface-cli login          # accept Laguna license on HF first
+
+make generate-smoke
+make prepare-advanced
+make train-laguna              # → outputs/laguna-xs-2.1-sft/final
+
+make infer-laguna
+```
+
+Config: `config/training_laguna.yaml` (QLoRA, 4k context, MoE-safe LoRA targets).
+
+| GPU | Notes |
+|-----|-------|
+| A100 40GB | Recommended |
+| L4 / T4 24GB | Use `max_seq_length: 2048` in config |
+| < 20 GB | Not recommended for Laguna full QLoRA |
+
+## Quick start — full pipeline (local or cloud VM)
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
@@ -240,43 +293,43 @@ The advanced dataset builder creates multiple examples per knowledge file:
 
 ## Benchmark goals
 
-Targets for the next training runs beyond v0.1. Current results are in [Current results (v0.1)](#current-results-v01) above.
+Targets for evaluating models trained on this pipeline. Record your results in the [Current results (v0.1)](#current-results-v01) section after training.
 
 ### Language modeling (pretrain)
 
-| Metric | v0.1 | Target | Notes |
-|--------|------|--------|-------|
-| Validation perplexity | **12.6** | < 15 | On held-out `pretrain.txt` split |
-| Tokens/sec (A100) | ~18k | > 20k | Default ~138M config, mixed precision |
+| Metric | Target | Notes |
+|--------|--------|-------|
+| Validation perplexity | < 15 | On held-out `pretrain.txt` split |
+| Tokens/sec (A100) | > 20k | Default ~138M config, mixed precision |
 
 ### Chat quality (SFT)
 
-| Metric | v0.1 | Target | Notes |
-|--------|------|--------|-------|
-| FAQ exact-match (seed set) | **73.4%** | > 70% | On curated seed FAQ chunks only |
-| RAG faithfulness | 68.2% | > 80% | Answer stays within provided context |
-| Multi-turn coherence | 64.5% | > 75% | Human or LLM-judge rubric on 100-dialogue sample |
+| Metric | Target | Notes |
+|--------|--------|-------|
+| FAQ exact-match (seed set) | > 70% | On curated seed FAQ chunks only |
+| RAG faithfulness | > 80% | Answer stays within provided context |
+| Multi-turn coherence | > 75% | Human or LLM-judge rubric on 100-dialogue sample |
 
 ### Code tasks
 
-| Metric | v0.1 | Target | Notes |
-|--------|------|--------|-------|
-| Code review relevance | **71%** | > 70% | Review addresses stated issue |
-| Syntax-valid generation | 79.3% | > 85% | Generated code parses without errors |
+| Metric | Target | Notes |
+|--------|--------|-------|
+| Code review relevance | > 70% | Review addresses stated issue |
+| Syntax-valid generation | > 85% | Generated code parses without errors |
 
 ### Retrieval-augmented (Zypher domain)
 
-| Metric | v0.1 | Target | Notes |
-|--------|------|--------|-------|
-| GraphRAG concept accuracy | 72.1% | > 75% | Correct use of graph/dependency terminology |
-| ADR structure completeness | 66.8% | > 80% | Includes context, decision, consequences |
+| Metric | Target | Notes |
+|--------|--------|-------|
+| GraphRAG concept accuracy | > 75% | Correct use of graph/dependency terminology |
+| ADR structure completeness | > 80% | Includes context, decision, consequences |
 
 ### Operational
 
-| Metric | v0.1 | Target | Notes |
-|--------|------|--------|-------|
-| p95 inference latency (GPU) | ~620 ms | < 500 ms | 128-token prompt, 256-token output |
-| Training reproducibility | ±2.1% val loss | ±2% | Same seed, same hardware |
+| Metric | Target | Notes |
+|--------|--------|-------|
+| p95 inference latency (GPU) | < 500 ms | 128-token prompt, 256-token output |
+| Training reproducibility | ±2% val loss | Same seed, same hardware |
 
 ## Project roadmap
 

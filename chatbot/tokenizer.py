@@ -27,7 +27,12 @@ class ChatbotTokenizer:
     def __init__(self, tokenizer: Tokenizer, special_tokens: list[str] | None = None):
         self._tok = tokenizer
         self.special_tokens = special_tokens or DEFAULT_SPECIAL_TOKENS
-        self.token_to_id = {tok: self._tok.token_to_id(tok) for tok in self.special_tokens}
+        self.token_to_id = {}
+        for tok in self.special_tokens:
+            idx = self._tok.token_to_id(tok)
+            if idx is None:
+                raise ValueError(f"Special token missing from vocabulary: {tok}")
+            self.token_to_id[tok] = idx
         self.id_to_token = {idx: tok for tok, idx in self.token_to_id.items()}
 
     @property

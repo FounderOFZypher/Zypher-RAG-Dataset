@@ -12,22 +12,22 @@ from chatbot.tokenizer import ChatbotTokenizer
 class InferenceEngine:
     def __init__(self, checkpoint_dir: Path, config_path: Path = Path("config/chatbot.yaml")):
         self.config = load_config(config_path)
-        self.tokenizer = ChatbotTokenizer.load(checkpoint_dir / "tokenizer")
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        checkpoint_dir = Path(checkpoint_dir)
 
-        model_cfg = self.config.model
-        self.model = ChatbotModel(
-            vocab_size=self.tokenizer.vocab_size,
-            max_seq_len=model_cfg.max_seq_len,
-            d_model=model_cfg.d_model,
-            n_heads=model_cfg.n_heads,
-            n_layers=model_cfg.n_layers,
-            d_ff=model_cfg.d_ff,
-            dropout=0.0,
-            rope_theta=model_cfg.rope_theta,
-        )
-        state = torch.load(checkpoint_dir / "model.pt", map_location=self.device)
-        self.model.load_state_dict(state)
+        tok_dir = checkpoint_dir / "tokenizer"
+        if not (tok_dir / "tokenizer.json").exists():
+            fallback = Path("outputs/tokenizer")
+            if (fallback / "tokenizer.json").exists():
+                print(f"Tokenizer not in checkpoint; using {fallback}")
+                tok_dir = fallback
+            else:
+                raise FileNotFoundError(
+                    f"No tokenizer at {tok_dir} or outputs/tokenizer. Run train-tokenizer first."
+                )
+
+        self.tokenizer = ChatbotTokenizer.load(tok_dir)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model = ChatbotModel.from_checkpoint(checkpoint_dir)
         self.model.to(self.device)
         self.model.eval()
 

@@ -113,6 +113,7 @@ class ChatbotModel(nn.Module):
     ):
         super().__init__()
         self.max_seq_len = max_seq_len
+        self.rope_theta = rope_theta
         self.token_emb = nn.Embedding(vocab_size, d_model)
         self.drop = nn.Dropout(dropout)
         self.layers = nn.ModuleList(
@@ -174,6 +175,7 @@ class ChatbotModel(nn.Module):
         return sum(p.numel() for p in self.parameters())
 
     def save_pretrained(self, directory: str) -> None:
+        import json
         from pathlib import Path
 
         path = Path(directory)
@@ -182,14 +184,39 @@ class ChatbotModel(nn.Module):
         config = {
             "vocab_size": self.lm_head.out_features,
             "max_seq_len": self.max_seq_len,
+            "d_model": self.token_emb.embedding_dim,
+            "n_heads": self.layers[0].attn.n_heads,
+            "n_layers": len(self.layers),
+            "d_ff": self.layers[0].mlp.w1.out_features,
+            "dropout": 0.0,
+            "rope_theta": self.rope_theta,
         }
-        (path / "config.json").write_text(__import__("json").dumps(config, indent=2), encoding="utf-8")
+        (path / "config.json").write_text(json.dumps(config, indent=2), encoding="utf-8")
 
     @classmethod
-    def load_pretrained(cls, directory: str, **model_kwargs) -> "ChatbotModel":
+    def from_checkpoint(cls, checkpoint_dir: str | Path) -> "ChatbotModel":
+        import json
         from pathlib import Path
 
-        path = Path(directory) / "model.pt"
-        model = cls(**model_kwargs)
-        model.load_state_dict(torch.load(path, map_location="cpu"))
+        ckpt_dir = Path(checkpoint_dir)
+        config_path = ckpt_dir / "config.json"
+        if not config_path.exists():
+            raise FileNotFoundError(
+                f"Missing {config_path}. Train the model first or use a valid checkpoint directory."
+            )
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        model = cls(
+            vocab_size=int(config["vocab_size"]),
+            max_seq_len=int(config["max_seq_len"]),
+            d_model=int(config["d_model"]),
+            n_heads=int(config["n_heads"]),
+            n_layers=int(config["n_layers"]),
+            d_ff=int(config["d_ff"]),
+            dropout=float(config.get("dropout", 0.0)),
+            rope_theta=float(config.get("rope_theta", 10000.0)),
+        )
+        state_path = ckpt_dir / "model.pt"
+        if not state_path.exists():
+            raise FileNotFoundError(f"Missing {state_path}")
+        model.load_state_dict(torch.load(state_path, map_location="cpu"))
         return model

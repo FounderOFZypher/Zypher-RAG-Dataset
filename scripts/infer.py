@@ -23,8 +23,13 @@ def main() -> None:
     parser.add_argument("--adapter", required=True, help="Path to LoRA adapter")
     parser.add_argument("--question", required=True, help="User question")
     parser.add_argument("--max-new-tokens", type=int, default=512)
+    parser.add_argument("--trust-remote-code", action="store_true", default=True)
     args = parser.parse_args()
+    trust = args.trust_remote_code
 
+    adapter_path = Path(args.adapter)
+    tok_path = adapter_path if (adapter_path / "tokenizer_config.json").exists() else args.base_model
+    tokenizer = AutoTokenizer.from_pretrained(tok_path, trust_remote_code=trust)
     quant_config = None
     if torch.cuda.is_available():
         quant_config = BitsAndBytesConfig(
@@ -34,14 +39,13 @@ def main() -> None:
             bnb_4bit_use_double_quant=True,
         )
 
-    tokenizer = AutoTokenizer.from_pretrained(args.base_model, trust_remote_code=True)
     model = AutoModelForCausalLM.from_pretrained(
         args.base_model,
         quantization_config=quant_config,
         device_map="auto" if torch.cuda.is_available() else None,
-        trust_remote_code=True,
+        trust_remote_code=trust,
     )
-    model = PeftModel.from_pretrained(model, args.adapter)
+    model = PeftModel.from_pretrained(model, str(adapter_path))
     model.eval()
 
     messages = [

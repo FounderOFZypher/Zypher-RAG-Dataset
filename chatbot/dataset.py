@@ -15,6 +15,8 @@ class PretrainDataset(Dataset):
         self.tokenizer = tokenizer
         self.max_seq_len = max_seq_len
         self.samples: list[list[int]] = []
+        if not path.exists():
+            raise FileNotFoundError(f"Pretrain data not found: {path}")
         with path.open(encoding="utf-8") as handle:
             for line in handle:
                 line = line.strip()
@@ -31,8 +33,14 @@ class PretrainDataset(Dataset):
 
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         ids = self.samples[idx]
+        pad_id = self.tokenizer.pad_token_id
+        if len(ids) < self.max_seq_len + 1:
+            ids = ids + [pad_id] * (self.max_seq_len + 1 - len(ids))
+        else:
+            ids = ids[: self.max_seq_len + 1]
         x = torch.tensor(ids[:-1], dtype=torch.long)
         y = torch.tensor(ids[1:], dtype=torch.long)
+        y[y == pad_id] = -100
         return {"input_ids": x, "labels": y}
 
 
