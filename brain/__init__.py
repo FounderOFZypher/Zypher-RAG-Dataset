@@ -1,12 +1,11 @@
-"""Zypher Brain — permanent knowledge layer for Zypher."""
+"""Zypher Brain — Mega RAG Database engine."""
 
-from brain.brain import ZypherBrain, BRAIN_SYSTEM_RULES
+from brain.brain import ZypherBrain
 from brain.types import Document, RetrievalResult, ScoredDocument
 
-__version__ = "1.0.0"
+__version__ = "3.0.0"
 __all__ = [
     "ZypherBrain",
-    "BRAIN_SYSTEM_RULES",
     "Document",
     "RetrievalResult",
     "ScoredDocument",

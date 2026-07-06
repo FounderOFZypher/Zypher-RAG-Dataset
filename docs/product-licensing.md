@@ -49,15 +49,15 @@ the RAG pipeline:
 | transformers | Apache-2.0 | Model loading |
 | FastAPI / uvicorn | MIT | Platform API |
 
-## Model licenses (separate acceptance required)
+## Runtime dependencies (not bundled)
 
-| Model | License | Bundled? |
-|-------|---------|----------|
-| `sentence-transformers/all-MiniLM-L6-v2` | Apache-2.0 | No — downloaded at runtime |
-| `poolside/Laguna-XS-2.1` | Custom HF license | No — users must accept on Hugging Face |
+| Component | License |
+|-----------|---------|
+| sentence-transformers | Apache-2.0 |
+| `all-MiniLM-L6-v2` model | Apache-2.0 |
+| chromadb | Apache-2.0 |
 
-The LLM is a **replaceable reasoning engine**. The knowledge package does not
-include model weights.
+This package is a **RAG database only** — no LLM weights are included.
 
 ## Commercial distribution checklist
 

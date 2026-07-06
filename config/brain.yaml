@@ -1,17 +1,14 @@
-# Zypher Brain — primary knowledge service
-# All docs, APIs, code, ADRs, runbooks live here. No retraining needed to add knowledge.
-
-system_prompt: |
-  You are Zypher, an enterprise AI coding assistant specialized in
-  RAG, GraphRAG, software architecture, and production engineering.
+# Zypher Brain — Mega RAG Database configuration
 
 knowledge_base:
   paths:
     - knowledge-base
-    - knowledge-base/generated
+    - knowledge-base/distributable/_samples
   glob: "**/*.md"
   exclude:
     - "**/_seed/**"
+    - "**/_excluded_from_distribution/**"
+    - "**/generated/**"
 
 embeddings:
   model: sentence-transformers/all-MiniLM-L6-v2
@@ -35,13 +32,6 @@ retrieval:
     metadata: 0.85
     graph: 0.65
 
-memory:
-  max_turns: 20
-
-tools:
-  enabled: true
-
-# Supported document types (add new .md files anytime — no model retraining)
 document_types:
   - documentation
   - faq
@@ -56,6 +46,11 @@ document_types:
   - migration_guide
   - incident_report
   - code_review
+  - guide
+  - tutorial
+  - benchmark
+  - evaluation
+  - best_practices
 
 relationship_types:
   - depends_on

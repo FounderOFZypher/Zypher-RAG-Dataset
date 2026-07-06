@@ -2,6 +2,23 @@
 
 All notable changes to the Zypher Brain product package are documented here.
 
+## [3.0.0] - 2026-07-06
+
+### Removed (database-only focus)
+
+- `zypher/` chatbot CLI and LLM provider
+- `zypher_platform/` REST API, sessions, jobs, agents
+- Fine-tuning scripts (`train.py`, `infer.py`, `prepare_advanced_dataset.py`)
+- `config/llm.yaml`, `platform.yaml`, `zypher_xs.yaml`, `rag.yaml`
+- Notebooks, Kubernetes/Docker hosting configs in knowledge-base
+- Conversation memory module (chat-only)
+
+### Changed
+
+- Repository is now **Mega RAG Database only**
+- `python3 -m brain` CLI for index / retrieve / stats
+- Slimmed `requirements.txt` to RAG dependencies only
+
 ## [2.0.0] - 2026-07-06
 
 ### Added

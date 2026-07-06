@@ -1,93 +1,29 @@
-# Zypher — Enterprise AI Coding Assistant
+# Zypher Mega RAG Database
 
-**Zypher Brain** is the permanent source of knowledge. The language model is a **replaceable reasoning engine** only.
+A **$1000+ premium RAG dataset** and retrieval engine. Original synthetic documents, vector-ready chunks, embeddings, graph relationships, metadata, benchmarks, and evaluation — nothing else.
 
-Add new documents to `knowledge-base/` anytime — no model retraining required.
+No chatbot. No LLM hosting. No fine-tuning. No REST API. **Database only.**
 
-## Architecture
-
-```
-User Message
-      │
-      ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                        ZYPHER BRAIN                             │
-│  Knowledge Base · Vector DB · Metadata · Graph · Memory          │
-│                                                                 │
-│  1. Save conversation                                           │
-│  2. Embed query                                                 │
-│  3. Vector search                                               │
-│  4. Metadata filter search                                      │
-│  5. Graph relationship traversal                                │
-│  6. Merge + re-rank                                             │
-│  7. Build context window                                        │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                   LLM (Reasoning Engine)                        │
-│  poolside/Laguna-XS-2.1 · optional adapter · swappable          │
-│  Answers ONLY from Zypher Brain context                         │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             ▼
-                      Final Answer
-```
-
-| Component | Role |
-|-----------|------|
-| **Zypher Brain** | Primary knowledge — docs, APIs, code, ADRs, runbooks, SQL |
-| **LLM** | Reasoning over retrieved context (not internal knowledge) |
-| **Optional fine-tune** | Style/domain tuning — not required for knowledge |
-
-## Zypher Platform (complete stack)
-
-Mega brain + enterprise platform layer:
+## What this is
 
 ```
-                    ┌─────────────────────────────────┐
-                    │       Zypher Platform API       │
-                    │  REST · Sessions · Jobs · Admin │
-                    └───────────────┬─────────────────┘
-                                    │
-          ┌─────────────────────────┼─────────────────────────┐
-          ▼                         ▼                         ▼
-   ┌─────────────┐          ┌─────────────┐          ┌─────────────┐
-   │ Zypher Brain│          │  LLM Engine │          │   Agents    │
-   │  (knowledge)│          │ (reasoning) │          │ (tools/RAG) │
-   └─────────────┘          └─────────────┘          └─────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                   ZYPHER MEGA RAG DATABASE                    │
+│                                                             │
+│  Knowledge Base · Chunks · Embeddings · Graph · Metadata    │
+│  Catalog · Benchmarks · Evaluation · Distribution Audit     │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-```bash
-make generate-mega      # expand brain
-make platform-index     # index brain
-make serve              # REST API on :8080
-```
-
-### API endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/v1/stats` | GET | Brain + platform statistics |
-| `/v1/chat` | POST | Chat with brain retrieval + LLM |
-| `/v1/retrieve` | POST | Search brain only (no LLM) |
-| `/v1/documents` | POST | Ingest new doc (no retraining) |
-| `/v1/index` | POST | Enqueue index job |
-| `/v1/generate` | POST | Enqueue mega corpus job |
-| `/v1/sessions` | POST/GET | Conversation sessions |
-| `/v1/jobs/{id}/run` | POST | Run background job |
-
-### Platform module
-
-```
-zypher_platform/
-├── core.py           # ZypherPlatform orchestrator
-├── api/app.py        # FastAPI REST API
-├── sessions/         # Multi-user conversation store
-├── jobs/             # Background index + generate jobs
-└── agents/           # Tool-calling agent orchestrator
-```
+| Artifact | Path |
+|----------|------|
+| Vector-ready chunks | `data/product/chunks/chunks.jsonl` |
+| Document catalog | `data/product/catalog.jsonl` |
+| Embeddings | `data/product/embeddings/embeddings.jsonl` |
+| Graph edges | `data/product/graph/edges.jsonl` |
+| Metadata index | `data/product/metadata/documents.json` |
+| Benchmarks | `benchmarks/*.jsonl` |
+| Manifest | `data/product/manifest.json` |
 
 ## Quick start
 
@@ -95,183 +31,94 @@ zypher_platform/
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-make generate-smoke     # expand knowledge corpus (optional)
-make index              # build Zypher Brain vector index
-make chat               # Brain retrieval + LLM reasoning
+# Build premium dataset (10K smoke test)
+make product-premium-smoke
+
+# Query the brain index
+make index
+python3 -m brain retrieve "What is RAG for code?" --context
 ```
 
-No fine-tuning required. To enable an optional adapter, set `adapter.enabled: true` in `config/llm.yaml`.
+## Premium tiers ($1000+ dataset)
 
-## Zypher Premium RAG Dataset ($1000+ tier)
-
-**100,000,000,000× hyper-scale** distributable corpus — original synthetic content, Apache-2.0, compliance-audited.
-
-| Tier | Command | Documents |
-|------|---------|-----------|
-| Smoke | `make product-premium-smoke` | 10,000 |
+| Tier | Command | Scale |
+|------|---------|-------|
+| Smoke | `make product-premium-smoke` | 10,000 documents |
 | Premium | `make product-premium` | Config default |
-| Hyper | `make product-hyper` | Uncapped (Vast.ai) |
+| **Hyper** | `make product-hyper` | **100B× multiplier — uncapped** |
 
-Each premium document includes 6+ substantive sections, code examples, graph relationships, metadata, and license markers. Streaming generation writes directly to `data/product/chunks.jsonl` and `catalog.jsonl` without memory blowup.
-
-```bash
-make product-premium-smoke   # Validate locally
-make product-hyper           # Full 100B× tier on Vast.ai cluster
-```
-
-See `knowledge-base/distributable/README.md` and `config/product_hyper.yaml`.
-
-## Zypher Product (value-first package)
-
-The product package delivers **curated knowledge**, not just volume. It includes everything needed for production RAG:
-
-| Component | What you get |
-|-----------|--------------|
-| Curated knowledge base | Original synthetic `CHUNK-*.md` documents (Apache-2.0) |
-| Vector-ready chunks | `data/product/chunks/chunks.jsonl` |
-| Embeddings | Pre-computed vectors + generation scripts |
-| Graph relationships | Typed edges (`depends_on`, `uses`, `see_also`, …) |
-| Metadata index | `data/product/metadata/documents.json` |
-| Benchmark datasets | FAQ pairs, retrieval gold, RAG eval |
-| Evaluation scripts | Recall@k, faithfulness, evidence report |
-| Examples + docs | RAG pipeline, API client, setup guides |
+Hyper tier: `mega_multiplier: 100000000000` — procedural streaming, 604+ trillion unique document combinations.
 
 ```bash
-make product      # Full build: chunks → dedup → validate → graph → embeddings → benchmarks
-make evaluate     # Run evaluation + evidence report
+# Full hyper run (Vast.ai / cluster)
+make product-hyper
 ```
 
-> The biggest challenge isn't making it big — it's making it valuable.
-
-Quality gates enforce: original synthetic content, accurate metadata, ≤5% duplication, Apache-2.0 licensing with NOTICE file, distribution audit, and retrieval evidence.
-
-**Not included in commercial package:** placeholder stubs (`_excluded_from_distribution/`), mega generated corpus (`generated/`). See `knowledge-base/PROVENANCE.md`.
-
-See [docs/product-setup.md](docs/product-setup.md) for the full guide.
-
-## Zypher Brain module
+## Brain module (retrieval engine)
 
 ```
 brain/
-├── brain.py              # ZypherBrain service
-├── ingestion/            # Load markdown documents
-├── embeddings/           # Query/document embeddings
-├── indexing/             # ChromaDB vector index
-├── metadata/             # doc_type, category, tag filters
-├── graph/                # Typed relationship traversal
-├── reranking/            # Merge + score results
-├── retrieval/            # Full retrieval pipeline
-└── memory/               # Conversation memory
+├── brain.py           # ZypherBrain database engine
+├── ingestion/         # Load documents
+├── embeddings/        # Vector encoding
+├── indexing/          # ChromaDB vector store
+├── metadata/          # Filters by doc_type, category, tags
+├── graph/             # Typed relationship traversal
+├── reranking/         # Merge + score results
+└── retrieval/         # Full retrieval pipeline
 ```
 
-### Knowledge types supported
+```bash
+python3 -m brain index --reindex     # Build vector index
+python3 -m brain stats               # Database statistics
+python3 -m brain retrieve "query"    # Retrieve documents
+```
 
-Documentation · FAQs · API References · ADRs · Runbooks · Troubleshooting · Code Examples · SQL Examples · Deployment Guides · Incident Reports · Design Documents · Code Reviews
+## Corpus generation (raw markdown)
 
-### Retrieval flow
+| Command | Documents |
+|---------|-----------|
+| `make generate-smoke` | 2,000 |
+| `make generate-mega` | 100,000 |
+| `make generate-ultra` | 1,000,000 |
+| `make generate-hyper` | Billions (uncapped) |
 
-1. Save conversation
-2. Generate embedding for user query
-3. Search vector database
-4. Search metadata filters
-5. Search graph relationships
-6. Merge and re-rank results
-7. Build context window
-8. Send context to LLM
-9. Return generated answer
+## Product pipeline
+
+```bash
+make product                 # Seed CHUNK corpus package
+make product-premium-smoke   # Premium smoke build
+make audit-distribution      # Commercial compliance check
+make evaluate                # Retrieval benchmarks + evidence
+```
 
 ## Configuration
 
 | File | Purpose |
 |------|---------|
-| `config/brain.yaml` | Knowledge paths, retrieval, graph, memory |
-| `config/brain_curated.yaml` | Curated product mode (CHUNK docs only) |
-| `config/product.yaml` | Product build, quality gates, benchmarks |
-| `config/llm.yaml` | LLM provider, model, optional adapter |
-| `config/corpus_generation.yaml` | Corpus generator settings |
-
-## Add knowledge (no retraining)
-
-```bash
-# 1. Add markdown to knowledge-base/
-echo "# My Runbook\n..." > knowledge-base/my-runbook.md
-
-# 2. Re-index
-make index
-
-# 3. Chat — Brain retrieves the new doc automatically
-make chat
-```
-
-## Optional: corpus generation + fine-tuning
-
-```bash
-make generate-smoke
-make prepare
-make train-xs          # optional — enable adapter in config/llm.yaml
-```
+| `config/product_hyper.yaml` | $1000+ premium hyper dataset |
+| `config/product.yaml` | Seed corpus product build |
+| `config/brain.yaml` | Brain index + retrieval |
+| `config/corpus_mega.yaml` | Mega corpus generation |
 
 ## Project structure
 
 ```
 .
-├── brain/                    # Zypher Brain (primary knowledge service)
-├── zypher/                   # Chatbot CLI + LLM provider
-│   ├── backend.py
-│   ├── chat.py
-│   └── llm/provider.py       # Swappable reasoning engine
-├── knowledge-base/           # Seed + generated documents
-├── data/product/             # Product artifacts (chunks, embeddings, graph)
-├── benchmarks/               # Evaluation datasets + evidence reports
-├── examples/                 # RAG query, API client examples
-├── docs/                     # Setup, quality, evaluation, licensing guides
+├── brain/                  # RAG database engine
+├── knowledge-base/         # Seed documents + distributable samples
+├── data/product/           # Exported dataset artifacts
+├── benchmarks/             # Evaluation datasets
 ├── scripts/
-│   ├── product/              # Product build pipeline
-│   ├── generate_corpus.py    # Expand brain corpus
-│   └── prepare_advanced_dataset.py  # Optional training data
-└── config/
-    ├── brain.yaml
-    ├── brain_curated.yaml
-    ├── product.yaml
-    └── llm.yaml
+│   ├── product/            # Dataset build pipeline
+│   ├── generate_corpus.py  # Corpus expansion
+│   └── mega_scale.py       # Hyper-scale topic expansion
+├── docs/                   # Setup, quality, licensing guides
+└── examples/               # Retrieval examples
 ```
 
-## Future compatibility
+## License
 
-- Multiple language models (swap in `config/llm.yaml`)
-- Model swapping without touching Brain
-- Optional fine-tuning (adapter path)
-- GraphRAG typed relationships
-- Tool calling (`search_zypher_brain`)
-- Multi-agent workflows
-- Enterprise deployments
+Apache-2.0. See `LICENSE`, `NOTICE`, and `knowledge-base/PROVENANCE.md`.
 
-## Scale the brain (mega)
-
-| Command | Documents | Where to run |
-|---------|-----------|--------------|
-| `make generate-smoke` | 2,000 | Local |
-| `make generate` | ~112,000 | Local / cloud |
-| `make generate-mega` | 100,000 | Vast.ai |
-| `make generate-ultra` | 1,000,000 | Vast.ai |
-| `make generate-hyper` | Billions (uncapped) | Vast.ai cluster |
-
-Hyper tier uses `mega_multiplier: 100000000000` — procedural streaming, no memory limit.
-
-```bash
-# On Vast.ai — mega brain
-make generate-mega && make index && make chat
-
-# Full hyper (100B× tier — billions of docs)
-make generate-hyper
-```
-
-Check stats: `cat knowledge-base/generated/brain_statistics.json`
-
-## Hardware
-
-| Step | GPU | Notes |
-|------|-----|-------|
-| `make index` | CPU OK | Embeddings via sentence-transformers |
-| `make chat` | 24 GB+ VRAM | 4-bit LLM inference |
-| `make train-xs` | Optional | Not required for knowledge |
+Original synthetic content only — `third_party_docs_copied: false`.

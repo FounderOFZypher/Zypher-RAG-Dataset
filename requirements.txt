@@ -1,26 +1,5 @@
-# Core ML stack (HuggingFace fine-tuning path)
-torch>=2.1.0
-# HuggingFace fine-tuning (Laguna XS 2.1 needs recent transformers)
-transformers>=4.52.0
-datasets>=2.20.0
-trl>=0.9.6
-peft>=0.12.0
-accelerate>=0.33.0
-bitsandbytes>=0.43.0; platform_system != "Darwin"
-tokenizers>=0.19.0
-
-# Data preparation & corpus generation
+# Mega RAG Database dependencies
 pyyaml>=6.0.1
 tqdm>=4.66.0
-
-# Enterprise RAG (final chatbot)
 chromadb>=0.5.0
 sentence-transformers>=3.0.0
-
-# Zypher Platform API
-fastapi>=0.115.0
-uvicorn[standard]>=0.30.0
-pydantic>=2.0.0
-
-# Optional: experiment tracking
-# wandb>=0.17.0

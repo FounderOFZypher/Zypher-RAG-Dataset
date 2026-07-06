@@ -1,42 +1,16 @@
-Zypher Brain
+Zypher Mega RAG Database
 Copyright 2026 Zypher / FOUNDEROF-AIRIES-AGENT
 
-This product includes software developed by third parties under the licenses below.
+Third-party open-source dependencies used by the RAG database engine:
 
 ================================================================================
 Apache License 2.0
 ================================================================================
-- PyTorch (https://pytorch.org/)
-- Hugging Face transformers (https://github.com/huggingface/transformers)
-- Hugging Face datasets (https://github.com/huggingface/datasets)
-- Hugging Face accelerate (https://github.com/huggingface/accelerate)
-- Hugging Face peft (https://github.com/huggingface/peft)
-- Hugging Face trl (https://github.com/huggingface/trl)
 - sentence-transformers (https://github.com/UKPLab/sentence-transformers)
 - ChromaDB (https://github.com/chroma-core/chroma)
-- FastAPI (https://github.com/tiangolo/fastapi)
-- Uvicorn (https://github.com/encode/uvicorn)
-- Pydantic (https://github.com/pydantic/pydantic)
 - PyYAML (https://github.com/yaml/pyyaml)
 - tqdm (https://github.com/tqdm/tqdm)
 - Embedding model: sentence-transformers/all-MiniLM-L6-v2 (Apache-2.0)
-
-================================================================================
-BSD License
-================================================================================
-- NumPy (dependency of PyTorch/sentence-transformers)
-
-================================================================================
-MIT License
-================================================================================
-- Various JavaScript dependencies of ChromaDB (if installed via npm backend)
-
-================================================================================
-Separate license — not bundled, downloaded at runtime
-================================================================================
-- poolside/Laguna-XS-2.1 — Custom license on Hugging Face. Users must accept
-  the model license on https://huggingface.co/poolside/Laguna-XS-2.1 before use.
-  This model is NOT included in the knowledge base package.
 
 ================================================================================
 Zypher knowledge base content

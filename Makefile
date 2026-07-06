@@ -1,15 +1,27 @@
-.PHONY: install validate generate generate-smoke generate-mega generate-ultra generate-hyper \
-        prepare pipeline train-xs index chat serve platform-stats platform-index infer clean \
-        product chunks deduplicate validate-product export-graph embeddings benchmarks \
-        manifest evaluate audit-distribution product-premium product-premium-smoke product-hyper \
-        stream-premium
+.PHONY: install clean index retrieve stats \
+        generate generate-smoke generate-mega generate-ultra generate-hyper \
+        product product-premium product-premium-smoke product-hyper stream-premium \
+        chunks deduplicate validate-product export-graph embeddings benchmarks \
+        manifest evaluate audit-distribution
 
 install:
 	pip install -r requirements.txt
 
-validate:
-	python3 scripts/validate_pipeline.py
+clean:
+	rm -rf data/brain data/vector_store knowledge-base/generated data/product \
+		__pycache__ scripts/__pycache__ brain/__pycache__ scripts/product/__pycache__
 
+# Brain — index and query the RAG database
+index:
+	python3 -m brain index --reindex
+
+retrieve:
+	python3 -m brain retrieve "$(QUERY)"
+
+stats:
+	python3 -m brain stats
+
+# Corpus generation (raw markdown expansion)
 generate:
 	python3 scripts/generate_corpus.py --scale $(or $(SCALE),1000)
 
@@ -28,47 +40,21 @@ generate-hyper:
 	python3 scripts/generate_corpus.py --config config/corpus_mega.yaml \
 		--mega-multiplier 100000000000 --skip-wiring --workers $(or $(WORKERS),32)
 
-prepare:
-	python3 scripts/prepare_advanced_dataset.py
-
-pipeline: generate-smoke prepare
-	@echo "Pipeline complete."
-
-pipeline-mega: generate-mega index
-	@echo "Mega brain ready."
-
-train-xs:
-	python3 scripts/train.py --config config/zypher_xs.yaml
-
-index:
-	python3 -m zypher.chat --reindex --index-only
-
-chat:
-	python3 -m zypher.chat
-
-# Zypher Platform — REST API + jobs + sessions
-serve:
-		python3 -m zypher_platform serve
-
-platform-stats:
-	python3 -m zypher_platform stats
-
-platform-index:
-	python3 -m zypher_platform index
-
-infer:
-	python3 scripts/infer.py \
-		--base-model poolside/Laguna-XS-2.1 \
-		--adapter outputs/zypher-xs/final \
-		--question "Explain GraphRAG for code architecture."
-
-clean:
-	rm -rf data/brain data/brain/vector_store_curated data/platform data/vector_store outputs/ knowledge-base/generated \
-		data/product __pycache__ scripts/__pycache__ zypher/__pycache__ brain/__pycache__ zypher_platform/__pycache__
-
-# Zypher Product — value-first knowledge package
+# Product pipeline — export distributable RAG dataset artifacts
 product:
 	python3 scripts/product/build_product.py
+
+product-premium-smoke:
+	python3 scripts/product/build_premium_product.py --config config/product_hyper_smoke.yaml
+
+product-premium:
+	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml
+
+product-hyper:
+	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml --max-files 0
+
+stream-premium:
+	python3 scripts/product/stream_premium_corpus.py --config config/product_hyper.yaml
 
 chunks:
 	python3 scripts/product/chunk_documents.py
@@ -96,16 +82,3 @@ evaluate:
 
 audit-distribution:
 	python3 scripts/product/audit_distribution.py
-
-# $1000+ Premium RAG Dataset — 100B× hyper-scale distributable corpus
-product-premium-smoke:
-	python3 scripts/product/build_premium_product.py --config config/product_hyper_smoke.yaml
-
-product-premium:
-	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml
-
-product-hyper:
-	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml --max-files 0
-
-stream-premium:
-	python3 scripts/product/stream_premium_corpus.py --config config/product_hyper.yaml

@@ -1,8 +1,7 @@
 """
-Zypher Brain — primary knowledge service for Zypher.
+Zypher Brain — Mega RAG Database engine.
 
-All documentation, APIs, code examples, ADRs, runbooks, and troubleshooting
-live in Zypher Brain. The language model is a replaceable reasoning engine.
+Knowledge base · vector index · metadata · graph relationships · retrieval pipeline.
 """
 
 from __future__ import annotations
@@ -16,29 +15,19 @@ from brain.embeddings.encoder import EmbeddingEncoder
 from brain.graph.relationships import GraphIndex
 from brain.indexing.vector_index import VectorIndex
 from brain.ingestion.loader import KnowledgeBase
-from brain.memory.conversation import ConversationMemory
 from brain.metadata.index import MetadataIndex
 from brain.reranking.reranker import Reranker
 from brain.retrieval.pipeline import RetrievalPipeline
 from brain.types import RetrievalResult
 
-BRAIN_SYSTEM_RULES = (
-    "You are Zypher, an enterprise AI coding assistant.\n"
-    "CRITICAL: Answer ONLY using the Zypher Brain context provided below.\n"
-    "Do NOT rely on internal model knowledge when relevant context exists.\n"
-    "If context is insufficient, say exactly what information is missing.\n"
-    "Cite document titles when referencing specific facts."
-)
-
 
 class ZypherBrain:
     """
-    Zypher Brain backend service:
-    - Knowledge Base
-    - Vector Database
+    Mega RAG Database engine:
+    - Knowledge Base (documents)
+    - Vector Database (embeddings)
     - Metadata Index
     - Graph Relationships
-    - Conversation Memory
     - Retrieval Pipeline
     """
 
@@ -91,14 +80,6 @@ class ZypherBrain:
             max_context_chars=int(ret_cfg.get("max_context_chars", 14000)),
         )
 
-        mem_cfg = self.config.get("memory", {})
-        self.memory = ConversationMemory(max_turns=int(mem_cfg.get("max_turns", 20)))
-
-        prompt = self.config.get("system_prompt", "").strip()
-        base_prompt = f"{prompt}\n\n{BRAIN_SYSTEM_RULES}".strip() if prompt else BRAIN_SYSTEM_RULES
-        if not self.memory.messages:
-            self.memory.add("system", base_prompt)
-
     def index(self, force: bool = False) -> int:
         if force:
             import shutil
@@ -119,53 +100,18 @@ class ZypherBrain:
         self.metadata_index.refresh()
         self.vector_index.index_document(doc)
 
-    def build_messages(self, user_message: str, retrieval: RetrievalResult) -> list[dict[str, str]]:
-        """Build LLM messages with Brain context (step 8 prep)."""
-        user_content = (
-            f"<zypher_brain_context>\n{retrieval.context}\n</zypher_brain_context>\n\n"
-            f"User question: {user_message}\n\n"
-            "Answer using ONLY the Zypher Brain context above. "
-            "If the context does not contain enough information, state what is missing."
-        )
-        # History without the raw user turn saved in step 1
-        history = self.memory.as_list()
-        if history and history[-1]["role"] == "user" and history[-1]["content"] == user_message:
-            history = history[:-1]
-        return history + [{"role": "user", "content": user_content}]
-
-    def answer(
-        self,
-        user_message: str,
-        generate_fn,
-    ) -> str:
-        """
-        Full 9-step Zypher Brain + LLM flow:
-
-        1. Save conversation
-        2–7. Retrieve from Brain (embed → vector → metadata → graph → rerank → context)
-        8. Send context to language model
-        9. Return generated answer
-        """
-        # 1. Save conversation
-        self.memory.add("user", user_message)
-
-        # 2–7. Retrieve from Zypher Brain
-        retrieval = self.retrieve(user_message)
-
-        # 8. Send context to reasoning engine
-        messages = self.build_messages(user_message, retrieval)
-        if retrieval.has_context:
-            reply = generate_fn(messages)
-        else:
-            reply = (
-                "I could not find relevant information in Zypher Brain for this question. "
-                "Please add documentation to the knowledge base or rephrase your query."
-            )
-
-        # 9. Save and return answer
-        self.memory.add("assistant", reply)
-        return reply
-
     @property
     def document_count(self) -> int:
         return len(self.kb)
+
+    def stats(self) -> dict[str, Any]:
+        indexed = 0
+        try:
+            indexed = self.vector_index._collection.count() if self.vector_index._collection else 0
+        except Exception:
+            pass
+        return {
+            "documents": len(self.kb),
+            "indexed_vectors": indexed,
+            "vector_store": str(self.vector_index.persist_dir),
+        }
