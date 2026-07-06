@@ -1,0 +1,75 @@
+# Zypher Brain — curated product mode (CHUNK documents only)
+# Use for production RAG: original content, accurate metadata, minimal duplication
+
+system_prompt: |
+  You are Zypher, an enterprise AI coding assistant specialized in
+  RAG, GraphRAG, software architecture, and production engineering.
+
+knowledge_base:
+  paths:
+    - knowledge-base
+  glob: "CHUNK-*.md"
+  exclude:
+    - "**/generated/**"
+    - "**/_seed/**"
+
+embeddings:
+  model: sentence-transformers/all-MiniLM-L6-v2
+
+vector_store:
+  persist_dir: data/brain/vector_store_curated
+  collection_name: zypher_brain_curated
+
+graph:
+  enabled: true
+  max_hops: 2
+  max_extra_chunks: 8
+
+retrieval:
+  vector_top_k: 10
+  metadata_top_k: 8
+  final_top_k: 8
+  max_context_chars: 14000
+  source_weights:
+    vector: 1.0
+    metadata: 0.85
+    graph: 0.65
+
+memory:
+  max_turns: 20
+
+tools:
+  enabled: true
+
+document_types:
+  - documentation
+  - faq
+  - api_reference
+  - architecture_decision
+  - design_document
+  - runbook
+  - troubleshooting
+  - code_walkthrough
+  - sql_example
+  - database_schema
+  - migration_guide
+  - incident_report
+  - code_review
+
+relationship_types:
+  - depends_on
+  - uses
+  - implements
+  - calls
+  - owned_by
+  - documents
+  - fixes
+  - replaces
+  - see_also
+
+knowledge_hubs:
+  - auth_service
+  - indexing_pipeline
+  - graphrag_engine
+  - payment_service
+  - ci_cd_platform

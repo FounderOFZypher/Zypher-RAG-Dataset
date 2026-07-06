@@ -1,5 +1,7 @@
 .PHONY: install validate generate generate-smoke generate-mega generate-ultra generate-hyper \
-        prepare pipeline train-xs index chat serve platform-stats platform-index infer clean
+        prepare pipeline train-xs index chat serve platform-stats platform-index infer clean \
+        product chunks deduplicate validate-product export-graph embeddings benchmarks \
+        manifest evaluate
 
 install:
 	pip install -r requirements.txt
@@ -60,5 +62,33 @@ infer:
 		--question "Explain GraphRAG for code architecture."
 
 clean:
-	rm -rf data/brain data/platform data/vector_store outputs/ knowledge-base/generated \
-		__pycache__ scripts/__pycache__ zypher/__pycache__ brain/__pycache__ zypher_platform/__pycache__
+	rm -rf data/brain data/brain/vector_store_curated data/platform data/vector_store outputs/ knowledge-base/generated \
+		data/product __pycache__ scripts/__pycache__ zypher/__pycache__ brain/__pycache__ zypher_platform/__pycache__
+
+# Zypher Product — value-first knowledge package
+product:
+	python3 scripts/product/build_product.py
+
+chunks:
+	python3 scripts/product/chunk_documents.py
+
+deduplicate:
+	python3 scripts/product/deduplicate.py
+
+validate-product:
+	python3 scripts/product/validate_quality.py
+
+export-graph:
+	python3 scripts/product/export_graph.py
+
+embeddings:
+	python3 scripts/product/export_embeddings.py
+
+benchmarks:
+	python3 scripts/product/build_benchmarks.py
+
+manifest:
+	python3 scripts/product/build_manifest.py
+
+evaluate:
+	python3 scripts/product/evaluate_rag.py

@@ -1,0 +1,54 @@
+# Zypher Product — quality-first knowledge package configuration
+# Value over volume: curated content, accurate metadata, minimal duplication
+
+name: Zypher Brain Product
+version: 1.0.0
+license: Apache-2.0
+updated: 2026-07-06
+
+# Curated sources only (exclude synthetic generated corpus for product builds)
+knowledge_base:
+  paths:
+    - knowledge-base
+  glob: "CHUNK-*.md"
+  exclude:
+    - "**/generated/**"
+    - "**/_seed/**"
+
+# Quality gates — builds fail if thresholds not met
+quality:
+  min_chunk_chars: 40
+  max_duplicate_ratio: 0.05      # max 5% duplicate chunks
+  require_metadata_fields:
+    - doc_id
+    - title
+  require_license_header: true
+  curated_only: true
+
+chunking:
+  max_chunk_chars: 2000
+  overlap_chars: 200
+  split_on: "## "                  # markdown H2 sections
+
+embeddings:
+  model: sentence-transformers/all-MiniLM-L6-v2
+  output_dir: data/product/embeddings
+  batch_size: 64
+
+output:
+  base_dir: data/product
+  chunks: data/product/chunks/chunks.jsonl
+  graph: data/product/graph/edges.jsonl
+  metadata: data/product/metadata/documents.json
+  manifest: data/product/manifest.json
+
+benchmarks:
+  output_dir: benchmarks
+  min_faq_pairs: 10
+  include_rag_eval: true
+  include_retrieval_gold: true
+
+evaluation:
+  top_k: 8
+  min_retrieval_recall: 0.50     # target for seed benchmark
+  min_metadata_accuracy: 0.90

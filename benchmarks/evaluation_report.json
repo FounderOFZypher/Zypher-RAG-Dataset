@@ -1,0 +1,492 @@
+{
+  "generated_at": "2026-07-06T19:00:33.294561+00:00",
+  "brain_config": "/workspace/config/brain_curated.yaml",
+  "top_k": 8,
+  "metrics": {
+    "retrieval": {
+      "metric": "recall@8",
+      "value": 0.7333,
+      "samples": 15,
+      "details": [
+        {
+          "query": "What is Retrieval-Augmented Generation (RAG) for code?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00000",
+            "CHUNK-00006",
+            "CHUNK-00008",
+            "CHUNK-00009",
+            "CHUNK-00005",
+            "CHUNK-00053",
+            "CHUNK-00057",
+            "CHUNK-00007"
+          ],
+          "relevant": [
+            "CHUNK-00000"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "How does Zypher use GraphRAG for architectural reasoning?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00001",
+            "CHUNK-00013",
+            "CHUNK-00014",
+            "CHUNK-00012",
+            "CHUNK-00059",
+            "CHUNK-00054",
+            "CHUNK-00015",
+            "CHUNK-00050"
+          ],
+          "relevant": [
+            "CHUNK-00001"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What are the benefits of Agentic RAG Workflows in Zypher?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00002",
+            "CHUNK-00016",
+            "CHUNK-00020",
+            "CHUNK-00018",
+            "CHUNK-00061",
+            "CHUNK-00060",
+            "CHUNK-00051",
+            "CHUNK-00055"
+          ],
+          "relevant": [
+            "CHUNK-00002"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "How does Zypher ensure data quality and cleaning for code RAG?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00003",
+            "CHUNK-00065",
+            "CHUNK-00066",
+            "CHUNK-00025",
+            "CHUNK-00023",
+            "CHUNK-00067",
+            "CHUNK-00021",
+            "CHUNK-00024"
+          ],
+          "relevant": [
+            "CHUNK-00003"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What are Zypher's advanced code chunking strategies?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00004",
+            "CHUNK-00026",
+            "CHUNK-00032",
+            "CHUNK-00052",
+            "CHUNK-00027",
+            "CHUNK-00068",
+            "CHUNK-00069",
+            "CHUNK-00029"
+          ],
+          "relevant": [
+            "CHUNK-00004"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What does Zypher document about Building Code Knowledge Graphs with ASTs and Tree-sitter?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00010",
+            "CHUNK-00012",
+            "CHUNK-00004",
+            "CHUNK-00058",
+            "CHUNK-00001",
+            "CHUNK-00011",
+            "CHUNK-00015",
+            "CHUNK-00026"
+          ],
+          "relevant": [
+            "CHUNK-00010"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What does Zypher document about PII Redaction Strategies for Code Repositories?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00063",
+            "CHUNK-00003",
+            "CHUNK-00004",
+            "CHUNK-00131",
+            "CHUNK-00022",
+            "CHUNK-00024",
+            "CHUNK-00007",
+            "CHUNK-00021"
+          ],
+          "relevant": [
+            "CHUNK-00063"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What does Zypher document about Graph Traversal Algorithms for Code Dependency Analysis?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00011",
+            "CHUNK-00015",
+            "CHUNK-00001",
+            "CHUNK-00004",
+            "CHUNK-00012",
+            "CHUNK-00010",
+            "CHUNK-00058",
+            "CHUNK-00054"
+          ],
+          "relevant": [
+            "CHUNK-00011"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What does Zypher document about Automated Documentation Extraction Techniques?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00022",
+            "CHUNK-00004",
+            "CHUNK-00003",
+            "CHUNK-00052",
+            "CHUNK-00029",
+            "CHUNK-00030",
+            "CHUNK-00007",
+            "CHUNK-00027"
+          ],
+          "relevant": [
+            "CHUNK-00022"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What does Zypher document about Handling Sensitive Information in RAG Indexes?",
+          "recall_at_k": 1.0,
+          "retrieved": [
+            "CHUNK-00023",
+            "CHUNK-00005",
+            "CHUNK-00003",
+            "CHUNK-00007",
+            "CHUNK-00025",
+            "CHUNK-00065",
+            "CHUNK-00024",
+            "CHUNK-00018"
+          ],
+          "relevant": [
+            "CHUNK-00023"
+          ],
+          "difficulty": "easy"
+        },
+        {
+          "query": "What documents are related to What is Retrieval-Augmented Generation (RAG) for code??",
+          "recall_at_k": 0.5556,
+          "retrieved": [
+            "CHUNK-00000",
+            "CHUNK-00006",
+            "CHUNK-00008",
+            "CHUNK-00009",
+            "CHUNK-00053",
+            "CHUNK-00005",
+            "CHUNK-00057",
+            "CHUNK-00007"
+          ],
+          "relevant": [
+            "CHUNK-00000",
+            "CHUNK-00001",
+            "CHUNK-00002",
+            "CHUNK-00003",
+            "CHUNK-00004",
+            "CHUNK-00005",
+            "CHUNK-00006",
+            "CHUNK-00007",
+            "CHUNK-00008"
+          ],
+          "difficulty": "hard"
+        },
+        {
+          "query": "What documents are related to How does Zypher use GraphRAG for architectural reasoning??",
+          "recall_at_k": 0.1111,
+          "retrieved": [
+            "CHUNK-00001",
+            "CHUNK-00013",
+            "CHUNK-00012",
+            "CHUNK-00054",
+            "CHUNK-00059",
+            "CHUNK-00050",
+            "CHUNK-00014",
+            "CHUNK-00015"
+          ],
+          "relevant": [
+            "CHUNK-00001",
+            "CHUNK-00000",
+            "CHUNK-00002",
+            "CHUNK-00003",
+            "CHUNK-00004",
+            "CHUNK-00005",
+            "CHUNK-00006",
+            "CHUNK-00007",
+            "CHUNK-00008"
+          ],
+          "difficulty": "hard"
+        },
+        {
+          "query": "What documents are related to What are the benefits of Agentic RAG Workflows in Zypher??",
+          "recall_at_k": 0.1111,
+          "retrieved": [
+            "CHUNK-00002",
+            "CHUNK-00016",
+            "CHUNK-00020",
+            "CHUNK-00018",
+            "CHUNK-00061",
+            "CHUNK-00060",
+            "CHUNK-00055",
+            "CHUNK-00062"
+          ],
+          "relevant": [
+            "CHUNK-00002",
+            "CHUNK-00000",
+            "CHUNK-00001",
+            "CHUNK-00003",
+            "CHUNK-00004",
+            "CHUNK-00005",
+            "CHUNK-00006",
+            "CHUNK-00007",
+            "CHUNK-00008"
+          ],
+          "difficulty": "hard"
+        },
+        {
+          "query": "What documents are related to How does Zypher ensure data quality and cleaning for code RAG??",
+          "recall_at_k": 0.1111,
+          "retrieved": [
+            "CHUNK-00003",
+            "CHUNK-00065",
+            "CHUNK-00025",
+            "CHUNK-00066",
+            "CHUNK-00067",
+            "CHUNK-00023",
+            "CHUNK-00024",
+            "CHUNK-00021"
+          ],
+          "relevant": [
+            "CHUNK-00003",
+            "CHUNK-00000",
+            "CHUNK-00001",
+            "CHUNK-00002",
+            "CHUNK-00004",
+            "CHUNK-00005",
+            "CHUNK-00006",
+            "CHUNK-00007",
+            "CHUNK-00008"
+          ],
+          "difficulty": "hard"
+        },
+        {
+          "query": "What documents are related to What are Zypher's advanced code chunking strategies??",
+          "recall_at_k": 0.1111,
+          "retrieved": [
+            "CHUNK-00004",
+            "CHUNK-00026",
+            "CHUNK-00032",
+            "CHUNK-00029",
+            "CHUNK-00052",
+            "CHUNK-00027",
+            "CHUNK-00068",
+            "CHUNK-00028"
+          ],
+          "relevant": [
+            "CHUNK-00004",
+            "CHUNK-00000",
+            "CHUNK-00001",
+            "CHUNK-00002",
+            "CHUNK-00003",
+            "CHUNK-00005",
+            "CHUNK-00006",
+            "CHUNK-00007",
+            "CHUNK-00008"
+          ],
+          "difficulty": "hard"
+        }
+      ]
+    },
+    "faithfulness": {
+      "metric": "context_keyword_overlap",
+      "value": 1.0,
+      "samples": 10,
+      "details": [
+        {
+          "question": "What is Retrieval-Augmented Generation (RAG) for code?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "retrieval",
+            "knowledge",
+            "augmented",
+            "generation",
+            "answer",
+            "enhances",
+            "allowing",
+            "retrieve"
+          ],
+          "context_chars": 5813
+        },
+        {
+          "question": "How does Zypher use GraphRAG for architectural reasoning?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "graphrag",
+            "knowledge",
+            "architectural",
+            "reasoning",
+            "represent",
+            "answer",
+            "leverages"
+          ],
+          "context_chars": 6297
+        },
+        {
+          "question": "What are the benefits of Agentic RAG Workflows in Zypher?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "agentic",
+            "benefits",
+            "workflows",
+            "answer",
+            "allows",
+            "intelligent",
+            "agent"
+          ],
+          "context_chars": 6286
+        },
+        {
+          "question": "How does Zypher ensure data quality and cleaning for code RAG?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "ensure",
+            "quality",
+            "cleaning",
+            "answer",
+            "focuses",
+            "robust",
+            "redaction"
+          ],
+          "context_chars": 6432
+        },
+        {
+          "question": "What are Zypher's advanced code chunking strategies?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "chunking",
+            "zypher",
+            "retrieval",
+            "strategies",
+            "recursive",
+            "context",
+            "preservation",
+            "advanced"
+          ],
+          "context_chars": 6251
+        },
+        {
+          "question": "What does Zypher document about Building Code Knowledge Graphs with ASTs and Tree-sitter?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "graphrag",
+            "knowledge",
+            "architectural",
+            "reasoning",
+            "building",
+            "graphs",
+            "sitter"
+          ],
+          "context_chars": 6205
+        },
+        {
+          "question": "What does Zypher document about PII Redaction Strategies for Code Repositories?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "ensure",
+            "quality",
+            "cleaning",
+            "knowledge",
+            "redaction",
+            "strategies",
+            "repositories"
+          ],
+          "context_chars": 5632
+        },
+        {
+          "question": "What does Zypher document about Graph Traversal Algorithms for Code Dependency Analysis?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "graphrag",
+            "architectural",
+            "reasoning",
+            "knowledge",
+            "graph",
+            "traversal",
+            "algorithms"
+          ],
+          "context_chars": 6216
+        },
+        {
+          "question": "What does Zypher document about Automated Documentation Extraction Techniques?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "ensure",
+            "quality",
+            "cleaning",
+            "knowledge",
+            "automated",
+            "documentation",
+            "extraction"
+          ],
+          "context_chars": 5973
+        },
+        {
+          "question": "What does Zypher document about Handling Sensitive Information in RAG Indexes?",
+          "keyword_overlap": 1.0,
+          "expected_keywords": [
+            "zypher",
+            "ensure",
+            "quality",
+            "cleaning",
+            "information",
+            "knowledge",
+            "handling",
+            "sensitive"
+          ],
+          "context_chars": 6290
+        }
+      ]
+    },
+    "metadata": {
+      "metric": "metadata_accuracy",
+      "value": 1.0,
+      "samples": 162
+    }
+  },
+  "passed": true,
+  "evidence": [
+    "Retrieval recall@8: 73.33% (target \u2265 50%, PASS)",
+    "Context keyword overlap: 100.00% across 10 FAQ queries",
+    "Metadata accuracy: 100.00% (target \u2265 90%, PASS)"
+  ]
+}

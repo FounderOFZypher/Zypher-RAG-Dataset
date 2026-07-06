@@ -81,14 +81,14 @@ def parse_markdown(path: Path) -> Document:
                 outer = loaded if isinstance(loaded, dict) else {}
             except yaml.YAMLError:
                 outer = {}
-        if len(parts) > 2 and parts[2].strip():
+        if len(parts) > 1 and parts[1].strip():
             try:
-                loaded = yaml.safe_load(parts[2].strip())
+                loaded = yaml.safe_load(parts[1].strip())
                 inner = loaded if isinstance(loaded, dict) else {}
             except yaml.YAMLError:
                 inner = {}
         meta = _merge_meta(outer, inner)
-        body = "---".join(parts[3:]).strip() if len(parts) > 3 else ""
+        body = "---".join(parts[2:]).strip() if len(parts) > 2 else ""
 
     relationships = _parse_relationships(meta)
     related = list(meta.get("related") or [])
