@@ -2,6 +2,24 @@
 
 All notable changes to the Coltex product package are documented here.
 
+## [2.1.0] - 2026-07-07
+
+### Added
+
+- **Expanded curated seed knowledge-base** — 340+ new CHUNK documents via `make expand-curated-kb`
+- 24 new corpus topic seeds (hybrid reranking, observability, vector stores, agentic patterns, and more)
+- Doc-type-aware benchmark question templates with difficulty tiers and category stratification
+- Multi-hop retrieval gold queries from knowledge hub graph links
+
+### Changed
+
+- Premium smoke build increased to **25,000 documents** (from 10,000) across **22 categories**
+- Benchmark datasets increased to **200 FAQ pairs**, **220 retrieval gold**, **200 RAG eval** (from 20 each)
+- Premium generator now round-robins topics for category diversity in bounded builds
+- Premium document sections include concrete operational details and checklists
+- Fixed Go/C++ code snippet template escaping for corpus generation
+- Smoke builds skip embedding export by default (`--skip-embeddings`) for faster iteration
+
 ## [3.1.0] - 2026-07-06
 
 ### Changed

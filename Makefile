@@ -1,5 +1,6 @@
 .PHONY: install clean index retrieve stats \
         generate generate-smoke generate-mega generate-ultra generate-hyper \
+        expand-curated-kb \
         product product-premium product-premium-smoke product-hyper stream-premium \
         chunks deduplicate validate-product export-graph embeddings benchmarks \
         manifest evaluate audit-distribution
@@ -40,12 +41,16 @@ generate-hyper:
 	python3 scripts/generate_corpus.py --config config/corpus_mega.yaml \
 		--mega-multiplier 100000000000 --skip-wiring --workers $(or $(WORKERS),32)
 
+# Expand curated seed knowledge-base with high-quality CHUNK documents
+expand-curated-kb:
+	python3 scripts/expand_curated_kb.py --count $(or $(COUNT),120)
+
 # Product pipeline — export distributable RAG dataset artifacts
 product:
 	python3 scripts/product/build_product.py
 
 product-premium-smoke:
-	python3 scripts/product/build_premium_product.py --config config/product_hyper_smoke.yaml
+	python3 scripts/product/build_premium_product.py --config config/product_hyper_smoke.yaml --skip-embeddings
 
 product-premium:
 	python3 scripts/product/build_premium_product.py --config config/product_hyper.yaml

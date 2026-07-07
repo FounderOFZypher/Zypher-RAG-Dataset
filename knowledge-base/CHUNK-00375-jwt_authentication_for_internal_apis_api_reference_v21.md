@@ -1,0 +1,79 @@
+---
+id: CHUNK-00375-JWT-AUTHENTICATION-FOR-INTERNAL-APIS-API-REFERENCE-V21
+title: "Chunk 00375 JWT Authentication for Internal APIs \u2014 Api Reference (v21)"
+category: CHUNK-00375-jwt_authentication_for_internal_apis_api_reference_v21.md
+tags:
+- jwt
+- oauth
+- rbac
+- tokens
+- api_reference
+- security
+- variant_21
+difficulty: intermediate
+related:
+- CHUNK-00367
+- CHUNK-00368
+- CHUNK-00369
+- CHUNK-00370
+- CHUNK-00371
+- CHUNK-00372
+- CHUNK-00373
+- CHUNK-00374
+last_updated: '2026-07-07'
+version: '2.0'
+---
+
+---
+id: CHUNK-00375
+title: "JWT Authentication for Internal APIs \u2014 Api Reference (v21)"
+category: security
+doc_type: api_reference
+tags:
+- jwt
+- oauth
+- rbac
+- tokens
+- api_reference
+- security
+- variant_21
+difficulty: intermediate
+related: []
+last_updated: '2026-07-07'
+version: '2.0'
+---
+
+# JWT Authentication for Internal APIs — Api Reference (v21)
+
+## Endpoint
+
+During incident response, **Endpoint** for `JWT Authentication for Internal APIs` (api_reference). This variant 21 covers jwt, oauth, rbac, tokens at intermediate level. Key considerations include reliability, observability, latency budgets, and safe rollout. Teams should validate assumptions with benchmarks, add tracing spans, and document failure modes. Recommended metrics: p95 latency, error rate, recall@k (if retrieval), and freshness of indexed data.
+## Authentication
+
+During incident response, **Authentication** for `JWT Authentication for Internal APIs` (api_reference). This variant 21 covers jwt, oauth, rbac, tokens at intermediate level. Key considerations include reliability, observability, latency budgets, and safe rollout. Teams should validate assumptions with benchmarks, add tracing spans, and document failure modes. Recommended metrics: p95 latency, error rate, recall@k (if retrieval), and freshness of indexed data.
+## Request Schema
+
+During incident response, **Request Schema** for `JWT Authentication for Internal APIs` (api_reference). This variant 21 covers jwt, oauth, rbac, tokens at intermediate level. Key considerations include reliability, observability, latency budgets, and safe rollout. Teams should validate assumptions with benchmarks, add tracing spans, and document failure modes. Recommended metrics: p95 latency, error rate, recall@k (if retrieval), and freshness of indexed data.
+## Response Schema
+
+During incident response, **Response Schema** for `JWT Authentication for Internal APIs` (api_reference). This variant 21 covers jwt, oauth, rbac, tokens at intermediate level. Key considerations include reliability, observability, latency budgets, and safe rollout. Teams should validate assumptions with benchmarks, add tracing spans, and document failure modes. Recommended metrics: p95 latency, error rate, recall@k (if retrieval), and freshness of indexed data.
+## Error Codes
+
+During incident response, **Error Codes** for `JWT Authentication for Internal APIs` (api_reference). This variant 21 covers jwt, oauth, rbac, tokens at intermediate level. Key considerations include reliability, observability, latency budgets, and safe rollout. Teams should validate assumptions with benchmarks, add tracing spans, and document failure modes. Recommended metrics: p95 latency, error rate, recall@k (if retrieval), and freshness of indexed data.
+## Reference Implementation
+
+```sql
+CREATE TABLE IF NOT EXISTS security_21 (
+    id          BIGSERIAL PRIMARY KEY,
+    topic       TEXT NOT NULL,
+    variant     INTEGER NOT NULL DEFAULT 21,
+    payload     JSONB NOT NULL,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_security_21_topic ON security_21 (topic);
+
+EXPLAIN ANALYZE
+SELECT id, topic, payload FROM security_21
+WHERE topic = 'jwt_auth' ORDER BY created_at DESC LIMIT 50;
+```

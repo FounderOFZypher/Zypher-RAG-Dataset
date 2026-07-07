@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from brain.types import Document
 from code_snippets import CODE_SNIPPETS, DEFAULT_CODE_LANGS
 from corpus_templates import TOPICS, Topic
-from mega_scale import estimate_documents, iter_all_topics, resolve_mega_tier
+from mega_scale import estimate_documents, iter_all_topics, resolve_mega_tier, count_base_topics
 
 PREMIUM_DOC_TYPES = (
     "documentation", "guide", "tutorial", "faq", "api_reference", "runbook",
@@ -45,6 +45,21 @@ OPENERS = (
     "Under strict latency and compliance requirements,",
     "During platform modernization initiatives,",
     "For security-sensitive code intelligence pipelines,",
+    "When onboarding a new engineering team to Coltex,",
+    "During a quarterly architecture review,",
+    "For regulated industries requiring audit trails,",
+    "When migrating legacy documentation into Coltex,",
+)
+
+CONCRETE_DETAILS = (
+    "Configure circuit breakers with a 30-second half-open window and exponential backoff.",
+    "Use idempotency keys on all write endpoints to prevent duplicate side effects.",
+    "Partition data by tenant_id and enforce row-level security at the database layer.",
+    "Deploy canary releases at 5% traffic before full rollout with automated rollback.",
+    "Index metadata fields (doc_type, category, hub) alongside dense vectors for hybrid search.",
+    "Run weekly chaos drills that simulate vector store failover and embedding service outage.",
+    "Cache hot queries in Redis with a 15-minute TTL and stale-while-revalidate policy.",
+    "Emit OpenTelemetry spans on every retrieval hop for end-to-end latency attribution.",
 )
 
 LANGUAGE_MAP = {
@@ -93,14 +108,22 @@ def _section_body(section: str, topic: Topic, doc_type: str, variant: int) -> st
     kw = ", ".join(topic.keywords[:5])
     recall = 0.68 + (variant % 20) * 0.015
     p95 = 85 + (variant % 50) * 8
+    detail = CONCRETE_DETAILS[(variant + hash(section)) % len(CONCRETE_DETAILS)]
+    shard_note = f"shard-{variant % 1000:03d}" if "shard" in topic.slug else f"hub-{topic.hub or topic.category}"
     return (
         f"{opener} the **{section}** layer for `{topic.title}` requires explicit engineering "
-        f"for {kw} at **{topic.difficulty}** complexity (variant {variant}).\n\n"
+        f"for {kw} at **{topic.difficulty}** complexity (variant {variant}, {shard_note}).\n\n"
         f"**Design requirements:**\n"
         f"- Define SLOs: p95 latency ≤ {p95}ms, availability ≥ 99.9%, retrieval recall@10 ≥ {recall:.2f}\n"
         f"- Add structured logging, distributed tracing, and audit trails for all write paths\n"
         f"- Version schemas; use feature flags for rollout; document rollback procedures\n"
-        f"- Validate with integration tests and chaos drills before production promotion\n\n"
+        f"- Validate with integration tests and chaos drills before production promotion\n"
+        f"- {detail}\n\n"
+        f"**Operational checklist:**\n"
+        f"1. Verify graph edges link `{topic.category}` documents to related hubs\n"
+        f"2. Confirm chunk overlap preserves context across section boundaries\n"
+        f"3. Run retrieval gold benchmarks after each corpus update\n"
+        f"4. Monitor duplicate chunk ratio stays below 5%\n\n"
         f"**Coltex note:** Ground all agent responses in indexed context; never rely on uncited model knowledge.\n"
         f"**License:** Apache-2.0 · **Origin:** Coltex premium synthetic corpus · **Type:** {doc_type}"
     )
@@ -177,13 +200,24 @@ def iter_premium_documents(
 ) -> Iterator[tuple[Document, dict[str, Any]]]:
     """Yield premium Document objects procedurally — never loads all into memory."""
     tier = resolve_mega_tier(mega_multiplier)
-    effective_variants = max(1, int(variations * scale / 1000) * tier.variant_multiplier * seed_multiplier)
+    # Bounded builds use base topics only for category diversity (not hyper shards)
+    topic_mega = 1 if max_documents else mega_multiplier
+    topic_count = count_base_topics(TOPICS, categories) if topic_mega == 1 else None
+    jobs_per_round = (topic_count or 1) * len(PREMIUM_DOC_TYPES)
+
+    raw_variants = max(1, int(variations * scale / 1000) * tier.variant_multiplier * seed_multiplier)
+    if max_documents and topic_count:
+        max_rounds = max(1, (max_documents + jobs_per_round - 1) // jobs_per_round)
+        effective_variants = min(raw_variants, max_rounds)
+    else:
+        effective_variants = raw_variants
+
     hub_recent: dict[str, list[str]] = {}
     count = 0
 
-    for topic in iter_all_topics(TOPICS, categories, mega_multiplier):
-        for doc_type in PREMIUM_DOC_TYPES:
-            for variant in range(effective_variants):
+    for variant in range(effective_variants):
+        for topic in iter_all_topics(TOPICS, categories, topic_mega):
+            for doc_type in PREMIUM_DOC_TYPES:
                 if max_documents and count >= max_documents:
                     return
                 hub = topic.hub or topic.category

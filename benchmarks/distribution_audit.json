@@ -24,8 +24,8 @@
     "streaming_mode": true
   },
   "summary": {
-    "distributable_documents": 2000,
-    "estimated_total_documents": 604800044640000,
+    "distributable_documents": 25000,
+    "estimated_total_documents": 2534400173952000,
     "mega_multiplier": 100000000000,
     "license": "Apache-2.0",
     "content_origin": "coltex_premium_synthetic",

@@ -58,7 +58,7 @@ public class {class_name}
 class {class_name} {{
 public:
     std::unordered_map<std::string, std::string> process() {{
-        return {{"status", "ok"}, {"topic", "{topic}"}, {"variant", std::to_string({variant})}};
+        return {{{{"status", "ok"}}, {{"topic", "{topic}"}}, {{"variant", std::to_string({variant})}}}};
     }}
 }};
 ```''',
@@ -70,8 +70,8 @@ type {class_name} struct {{
     Variant int
 }}
 
-func (s *{class_name}) Process() map[string]interface{} {{
-    return map[string]interface{}{{"status": "ok", "topic": "{topic}", "variant": {variant}}}
+func (s *{class_name}) Process() map[string]interface{{}} {{
+    return map[string]interface{{}}{{"status": "ok", "topic": "{topic}", "variant": {variant}}}
 }}
 ```''',
     "rust": '''```rust

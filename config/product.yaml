@@ -64,7 +64,7 @@ output:
 
 benchmarks:
   output_dir: benchmarks
-  min_faq_pairs: 10
+  min_faq_pairs: 80
   include_rag_eval: true
   include_retrieval_gold: true
 

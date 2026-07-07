@@ -3,17 +3,17 @@
 # Original synthetic content · Apache-2.0 · compliance-audited
 
 name: Coltex Premium RAG Dataset
-version: 2.0.0
+version: 2.1.0
 tier: premium
 price_usd: 1000
 license: Apache-2.0
-updated: 2026-07-06
+updated: 2026-07-07
 
 # Hyper-scale generation (procedural streaming — no memory blowup)
 generation:
   mega_multiplier: 100000000000    # 100 billion× tier
   scale: 10000
-  variations_per_doc: 24
+  variations_per_doc: 32
   max_files: 0                     # 0 = uncapped (run on Vast.ai)
   sample_md_files: 10000           # audit samples written to disk
   sample_dir: knowledge-base/distributable/_samples
@@ -105,13 +105,13 @@ output:
 
 benchmarks:
   output_dir: benchmarks
-  min_faq_pairs: 50
+  min_faq_pairs: 500
   include_rag_eval: true
   include_retrieval_gold: true
-  sample_from_catalog: 5000
+  sample_from_catalog: 10000
 
 evaluation:
   top_k: 8
   min_retrieval_recall: 0.45
   min_metadata_accuracy: 0.90
-  sample_size: 200
+  sample_size: 300

@@ -1,19 +1,19 @@
 # Coltex Premium RAG Dataset — local smoke test
-# Generates 10,000 premium documents for validation before Vast.ai hyper run
+# Generates 25,000 premium documents for validation before Vast.ai hyper run
 
 name: Coltex Premium RAG Dataset (Smoke)
-version: 2.0.0-smoke
+version: 2.1.0-smoke
 tier: premium-smoke
 price_usd: 1000
 license: Apache-2.0
-updated: 2026-07-06
+updated: 2026-07-07
 
 generation:
   mega_multiplier: 100000000000
   scale: 10000
-  variations_per_doc: 24
-  max_files: 10000
-  sample_md_files: 500
+  variations_per_doc: 32
+  max_files: 25000
+  sample_md_files: 1000
   sample_dir: knowledge-base/distributable/_samples
   streaming: true
   categories:
@@ -21,9 +21,24 @@ generation:
     - graphrag
     - agentic
     - python
+    - java
+    - javascript
+    - typescript
+    - go
+    - rust
+    - sql
+    - postgresql
+    - mongodb
+    - redis
+    - docker
     - kubernetes
+    - aws
     - security
     - architecture
+    - microservices
+    - ci_cd
+    - testing
+    - performance
 
 knowledge_base:
   paths:
@@ -65,7 +80,7 @@ embeddings:
   model: sentence-transformers/all-MiniLM-L6-v2
   output_dir: data/product/embeddings
   batch_size: 64
-  max_chunks: 50000
+  max_chunks: 150000
 
 output:
   base_dir: data/product
@@ -78,13 +93,13 @@ output:
 
 benchmarks:
   output_dir: benchmarks
-  min_faq_pairs: 20
+  min_faq_pairs: 200
   include_rag_eval: true
   include_retrieval_gold: true
-  sample_from_catalog: 1000
+  sample_from_catalog: 5000
 
 evaluation:
   top_k: 8
   min_retrieval_recall: 0.40
   min_metadata_accuracy: 0.90
-  sample_size: 50
+  sample_size: 100

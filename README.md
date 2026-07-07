@@ -68,7 +68,7 @@ pip install -r requirements.txt
 make product-premium-smoke
 ```
 
-This generates 10,000 premium documents with full pipeline validation. Artifacts are written to `data/product/`.
+This generates 25,000 premium documents with full pipeline validation. Artifacts are written to `data/product/`.
 
 ### Index and query
 
@@ -85,7 +85,7 @@ Coltex supports three build tiers for the premium RAG dataset. Configuration is 
 
 | Tier | Command | Scope |
 |------|---------|-------|
-| Smoke | `make product-premium-smoke` | 10,000 documents — local validation |
+| Smoke | `make product-premium-smoke` | 25,000 documents — local validation |
 | Premium | `make product-premium` | Full premium pipeline per configuration |
 | Hyper | `make product-hyper` | Uncapped streaming generation for cluster deployment |
 
