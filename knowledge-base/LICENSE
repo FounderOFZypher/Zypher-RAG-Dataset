@@ -2,23 +2,32 @@
 
 Copyright 2026 Coltex / FOUNDEROF-AIRIES-AGENT
 
-The Coltex Dataset is governed by the **Coltex End User License Agreement (EULA)**.
+Coltex is offered under four license tiers:
 
-**Full legal text:** [EULA.md](../EULA.md) · **Scope summary:** [EULA.md](EULA.md)
+| Tier | Price | Document |
+|------|-------|----------|
+| **Personal** (non-commercial) | $79 USD one-time | [PERSONAL-LICENSE.md](../PERSONAL-LICENSE.md) |
+| **Professional** (commercial) | $399 USD one-time | [PROFESSIONAL-LICENSE.md](../PROFESSIONAL-LICENSE.md) |
+| **Enterprise** (organization-wide) | Custom quote | [ENTERPRISE-LICENSE.md](../ENTERPRISE-LICENSE.md) |
+| **Dataset EULA** (enterprise packages) | Per agreement | [EULA.md](../EULA.md) |
 
-## Purchaser rights (summary)
+## Personal License ($79)
 
-When you purchase the Coltex Dataset, you receive a license to:
+For students, hobbyists, and researchers. Non-commercial use only.
 
-- Use the Dataset for lawful commercial and internal purposes
-- Build and sell software, AI applications, and RAG services powered by the Dataset
-- Modify the Dataset and create derivative works (subject to EULA restrictions)
-- Generate embeddings, indexes, and graph databases
-- Share derivative outputs with your customers (not raw Dataset redistribution)
+## Professional License ($399)
 
-See [EULA.md](../EULA.md) for complete permitted and restricted uses.
+For freelancers, startups, and commercial developers. Includes Personal rights plus commercial use for one company or legal entity.
+
+## Enterprise License (custom quote)
+
+For medium and large businesses, government, education, and enterprises. Includes Professional rights plus organization-wide deployment, multiple teams, private/on-prem cloud, and enterprise services per agreement.
+
+## Dataset EULA
+
+Supplemental terms for enterprise RAG vector dataset packages (chunks, embeddings, graph edges, benchmarks).
 
 ## Excluded paths
 
 Files under `knowledge-base/_excluded_from_distribution/` and
-`knowledge-base/generated/` are not part of the commercial product package.
+`knowledge-base/generated/` are not part of any product package.

@@ -1,83 +1,52 @@
 # Coltex SKU Matrix
 
-Commercial tiers for the Coltex Enterprise RAG Vector Dataset.
+License tiers and commercial packages for the Coltex RAG Vector Dataset.
 
 ---
 
-## Tier comparison
+## License tiers
+
+| | **Personal** | **Professional** | **Enterprise** |
+|---|---|--------------|------------------|
+| **SKU** | `coltex-personal-v1` | `coltex-professional-v1` | `coltex-enterprise-v3` / premium |
+| **Price** | **$79** one-time | **$399** one-time | **Custom quote** |
+| **License** | [PERSONAL-LICENSE.md](../PERSONAL-LICENSE.md) | [PROFESSIONAL-LICENSE.md](../PROFESSIONAL-LICENSE.md) | [ENTERPRISE-LICENSE.md](../ENTERPRISE-LICENSE.md) |
+| **Use case** | Non-commercial | Commercial — one entity | Organization-wide deployment |
+| **Intended users** | Students, hobbyists, researchers | Freelancers, startups, dev shops | Businesses, government, education, enterprises |
+| **Build command** | `make product-personal` | `make product-professional` | `make product-enterprise` |
+
+### Personal — $79
+
+Non-commercial personal use. Learning, research, private projects.
+
+### Professional — $399
+
+Everything in Personal, **plus** commercial rights: revenue-generating apps, customer-facing integrations, business deployment. One company or legal entity.
+
+See [PROFESSIONAL-LICENSE.md](../PROFESSIONAL-LICENSE.md) for full terms.
+
+### Enterprise — Custom Quote
+
+Everything in Professional, **plus** organization-wide deployment, multiple users and teams, private/customer cloud (AWS, Azure, GCP, Kubernetes), on-premises deployment, and enterprise services (deployment assistance, training, priority support, volume licensing).
+
+Enterprise RAG vector dataset packages include supplemental terms under the [EULA](../EULA.md). See commercial dataset tiers below.
+
+---
+
+## Enterprise dataset tiers
 
 | | **Enterprise Curated** | **Premium Standard** | **Premium Hyper** |
 |---|------------------------|----------------------|-------------------|
 | **SKU** | `coltex-enterprise-v3` | `coltex-premium-v2.1` | `coltex-premium-hyper-v2.1` |
-| **Price guidance** | Contact | $1,000+ | $1,000+ (volume) |
-| **Documents** | 12,993 curated CHUNK docs | 25,000 streamed | Uncapped (100B× procedural) |
-| **Domains** | 63 full domains | 27 categories | 27+ categories |
-| **Graph architecture** | Full (hubs, links, routes) | Streamed graph edges | Streamed graph edges |
-| **Embeddings** | Optional (included in build) | Pre-computed (500k cap local) | Cluster-scale export |
+| **Price** | Contact | $1,000+ | $1,000+ (volume) |
+| **Documents** | 12,993 curated | 25,000 streamed | Uncapped |
+| **Domains** | 63 | 27 categories | 27+ categories |
+| **Graph architecture** | Full (hubs, links, routes) | Streamed edges | Streamed edges |
+| **Embeddings** | Optional | Pre-computed (500k cap) | Cluster-scale |
 | **Benchmarks** | 200+ pairs | 500+ pairs | 500+ pairs |
 | **Audit report** | ✅ | ✅ | ✅ |
 | **Build command** | `make product-enterprise` | `make product-premium-smoke` | `make product-hyper` |
-| **Best for** | Production RAG pilots | Buyer validation / demos | Maximum scale deployment |
-
----
-
-## What's in every tier
-
-- Coltex EULA with full provenance documentation
-- `manifest.json` with SHA-256 checksums
-- `distribution_audit.json` compliance report
-- Typed metadata on every document
-- Quality gate validation (dedup, substance, license checks)
-- Benchmark datasets for due diligence
-
----
-
-## Enterprise Curated — recommended starting point
-
-The **Enterprise Curated** tier combines the full knowledge-corpus architecture (63 domains, 18 hubs, graph links, domain routes, processing layers) with the standard product pipeline. This is the most polished, graph-rich deliverable.
-
-```bash
-make corpus-mega              # Expand to 10,000+ domain documents
-make product-enterprise       # Chunk → embed → benchmark → manifest → audit
-```
-
-**Deliverables:** `data/product/` + `benchmarks/` + compliance files
-
----
-
-## Premium Standard — validation & demos
-
-25,000 procedurally streamed documents with audit samples on disk. Ideal for smoke-testing buyer pipelines before a hyper-scale run.
-
-```bash
-make product-premium-smoke
-make audit-distribution
-```
-
-**Sample files:** `knowledge-base/distributable/_samples/` (1,000 audit markdown files)
-
----
-
-## Premium Hyper — maximum scale
-
-100-billion× procedural multiplier. Intended for cluster deployment (Vast.ai, cloud GPU). Uncapped document generation.
-
-```bash
-make product-hyper            # Requires cluster resources
-```
-
-Estimated procedural capacity: 600+ trillion unique document combinations.
-
----
-
-## Add-ons (available on request)
-
-| Add-on | Description |
-|--------|-------------|
-| Custom domain pack | Additional technology verticals |
-| Re-embedding | Alternative embedding models (e.g. bge-small) |
-| Evaluation report | Full recall@k report on buyer queries |
-| White-label manifest | Buyer-branded `manifest.json` |
+| **Best for** | Production RAG | Buyer validation | Maximum scale |
 
 ---
 
@@ -89,4 +58,4 @@ Estimated procedural capacity: 600+ trillion unique document combinations.
 | Cloud storage | S3 / GCS signed URL |
 | Hugging Face Dataset | Parquet or JSONL |
 
-Contact: see repository maintainer for licensing and delivery options.
+Contact: repository maintainer for licensing and delivery.

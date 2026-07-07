@@ -10,7 +10,7 @@
   },
   "document_substance": {
     "passed": true,
-    "total_documents": 12994,
+    "total_documents": 12996,
     "rejected": 6,
     "rejection_ratio": 0.0005,
     "max_rejection_ratio": 0.01,
@@ -66,12 +66,12 @@
     "issues": []
   },
   "summary": {
-    "distributable_documents": 12994,
+    "distributable_documents": 12996,
     "estimated_total_documents": null,
     "mega_multiplier": null,
-    "license": "Coltex-EULA",
+    "license": "Coltex-Professional",
     "content_origin": "original_synthetic",
     "third_party_docs_copied": false,
-    "price_tier_usd": null
+    "price_tier_usd": 399
   }
 }

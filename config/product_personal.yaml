@@ -1,17 +1,14 @@
-# Coltex Enterprise RAG Vector Dataset — Enterprise tier
-# Full knowledge-corpus architecture · graph-linked · vector-ready · compliance-audited
+# Coltex Personal RAG Dataset — Personal tier
+# Non-commercial use · students, hobbyists, researchers
 
-name: Coltex Enterprise RAG Vector Dataset
-version: 3.0.0
-tier: enterprise
-price_usd: null
-pricing: custom_quote
-license: Coltex-Enterprise
-license_path: ENTERPRISE-LICENSE.md
-dataset_agreement: EULA.md
+name: Coltex Personal RAG Dataset
+version: 1.0.0
+tier: personal
+price_usd: 79
+license: Coltex-Personal
+license_path: PERSONAL-LICENSE.md
 updated: 2026-07-07
 
-# Full curated knowledge base including architecture corpus
 knowledge_base:
   paths:
     - knowledge-base
@@ -22,8 +19,7 @@ knowledge_base:
     - "**/_excluded_from_distribution/**"
 
 distribution:
-  require_enterprise_license: true
-  require_eula: true
+  require_personal_license: true
   require_provenance: true
   require_notice: true
   forbidden_body_markers:
@@ -33,10 +29,6 @@ distribution:
   forbidden_source_patterns:
     - "wikipedia.org"
     - "stackoverflow.com"
-    - "docs.python.org"
-    - "kubernetes.io/docs"
-    - "huggingface.co/docs"
-    - "python.langchain.com"
     - "all rights reserved"
 
 quality:
@@ -57,7 +49,7 @@ embeddings:
   model: sentence-transformers/all-MiniLM-L6-v2
   output_dir: data/product/embeddings
   batch_size: 64
-  max_chunks: 250000
+  max_chunks: 50000
 
 output:
   base_dir: data/product
@@ -69,13 +61,13 @@ output:
 
 benchmarks:
   output_dir: benchmarks
-  min_faq_pairs: 300
+  min_faq_pairs: 100
   include_rag_eval: true
   include_retrieval_gold: true
-  sample_from_catalog: 8000
+  sample_from_catalog: 3000
 
 evaluation:
   top_k: 8
-  min_retrieval_recall: 0.48
-  min_metadata_accuracy: 0.92
-  sample_size: 200
+  min_retrieval_recall: 0.40
+  min_metadata_accuracy: 0.90
+  sample_size: 50

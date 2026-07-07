@@ -21,7 +21,13 @@ make corpus-report                # Rebuild catalog index
 ## Build commercial vector dataset
 
 ```bash
-# Enterprise tier (recommended — full graph architecture, 13k+ docs)
+# Personal tier ($79 — non-commercial)
+make product-personal
+
+# Professional tier ($399 — commercial, one entity)
+make product-professional
+
+# Enterprise tier (commercial dataset packages)
 make product-enterprise
 
 # Fast build without embeddings (validation)
