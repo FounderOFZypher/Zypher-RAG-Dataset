@@ -1,9 +1,9 @@
-# Coltex configuration — Advanced Living Brain (Hypercortex v2)
+# Coltex configuration — Advanced Knowledge Corpus (Knowledge Architecture v2)
 
 knowledge_base:
   paths:
     - knowledge-base
-    - knowledge-base/living-brain
+    - knowledge-base/knowledge-corpus
     - knowledge-base/distributable/_samples
   glob: "**/*.md"
   exclude:
@@ -36,7 +36,7 @@ retrieval:
 
 architecture:
   config_path: config/brain_architecture.yaml
-  codename: hypercortex
+  codename: knowledge_architecture
   version: "2.0"
 
 document_types:
@@ -100,4 +100,4 @@ knowledge_hubs:
   - incident_command
   - ml_training_pipeline
   - api_gateway
-  - coltex_living_brain
+  - coltex_knowledge_core

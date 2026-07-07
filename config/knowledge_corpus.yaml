@@ -1,0 +1,36 @@
+# Coltex Knowledge Architecture v2 — Advanced Knowledge Corpus Architecture
+
+architecture:
+  version: "2.0"
+  codename: knowledge_architecture
+
+knowledge_corpus:
+  root: knowledge-base/knowledge-corpus
+  neural_map: data/brain/neural-map.json
+  architecture_manifest: data/brain/architecture-manifest.json
+
+  regions:
+    cortex: cortex              # L1–L6 cortical layers
+    lobes: lobes                # frontal, temporal, parietal, occipital, limbic
+    domains: domains            # 62+ technology categories
+    hubs: hubs                  # 18 neural service clusters
+    synapses: synapses          # hub-to-hub graph links
+    pathways: pathways          # lobe-to-lobe neural routes
+    memory: memory              # working, episodic, semantic, procedural
+    hippocampus: hippocampus    # long-term consolidation
+    cerebellum: cerebellum        # CI/CD motor coordination
+    brainstem: brainstem        # autonomic always-on ops
+    thalamus: thalamus          # query relay routing
+    amygdala: amygdala          # priority & alert routing
+    reflexes: reflexes          # instant-recall FAQs
+
+  bootstrap:
+    default_grow: 500
+    advanced_grow: 1000
+    mega_grow: 10000
+
+  graph:
+    advanced_routing: true
+    max_hops: 4
+    max_pathways: 90
+    relationship_types: 20

@@ -1,5 +1,5 @@
-.PHONY: install clean index retrieve stats pulse \
-        living-brain living-brain-advanced living-brain-grow living-brain-mega living-brain-pulse \
+.PHONY: install clean index retrieve stats report pulse \
+        corpus corpus-advanced corpus-grow corpus-mega corpus-report \
         generate generate-smoke generate-mega generate-ultra generate-hyper \
         expand-curated-kb \
         product product-premium product-premium-smoke product-hyper stream-premium \
@@ -13,30 +13,30 @@ clean:
 	rm -rf data/brain data/vector_store knowledge-base/generated data/product \
 		__pycache__ scripts/__pycache__ brain/__pycache__ scripts/product/__pycache__
 
-# Coltex Living Brain — Hypercortex v2
-living-brain:
-	python3 scripts/living_brain.py bootstrap --grow 300
+# Coltex Knowledge Corpus
+corpus:
+	python3 scripts/knowledge_corpus.py bootstrap --grow 300
 
-living-brain-advanced:
-	python3 scripts/living_brain.py advanced --grow 500
+corpus-advanced:
+	python3 scripts/knowledge_corpus.py advanced --grow 500
 
-living-brain-grow:
-	python3 scripts/living_brain.py grow --count $(or $(COUNT),200)
+corpus-grow:
+	python3 scripts/knowledge_corpus.py grow --count $(or $(COUNT),200)
 
-living-brain-mega:
-	python3 scripts/living_brain.py bootstrap --grow 10000
+corpus-mega:
+	python3 scripts/knowledge_corpus.py bootstrap --grow 10000
 
-living-brain-pulse:
-	python3 scripts/living_brain.py map
-	python3 -m brain pulse
+corpus-report:
+	python3 scripts/knowledge_corpus.py map
+	python3 -m brain report
 
-living-brain-structure:
-	python3 scripts/living_brain.py structure
+corpus-structure:
+	python3 scripts/knowledge_corpus.py structure
 
-living-brain-synapses:
-	python3 scripts/living_brain.py synapses
+corpus-synapses:
+	python3 scripts/knowledge_corpus.py synapses
 
-# Coltex — index and query the living brain
+# Coltex retrieval engine
 index:
 	python3 -m brain index --reindex
 
@@ -46,10 +46,13 @@ retrieve:
 stats:
 	python3 -m brain stats
 
-pulse:
-	python3 -m brain pulse
+report:
+	python3 -m brain report
 
-# Corpus generation (raw markdown expansion)
+pulse:
+	python3 -m brain report
+
+# Corpus generation
 generate:
 	python3 scripts/generate_corpus.py --scale $(or $(SCALE),1000)
 
@@ -68,11 +71,9 @@ generate-hyper:
 	python3 scripts/generate_corpus.py --config config/corpus_mega.yaml \
 		--mega-multiplier 100000000000 --skip-wiring --workers $(or $(WORKERS),32)
 
-# Expand curated seed knowledge-base with high-quality CHUNK documents
 expand-curated-kb:
 	python3 scripts/expand_curated_kb.py --count $(or $(COUNT),120)
 
-# Product pipeline — export distributable RAG dataset artifacts
 product:
 	python3 scripts/product/build_product.py
 

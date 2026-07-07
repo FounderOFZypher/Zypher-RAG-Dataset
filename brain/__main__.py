@@ -33,9 +33,13 @@ def cmd_stats(args: argparse.Namespace) -> None:
     print(json.dumps(brain.stats(), indent=2))
 
 
-def cmd_pulse(args: argparse.Namespace) -> None:
+def cmd_report(args: argparse.Namespace) -> None:
     brain = Coltex(config_path=args.config)
-    print(json.dumps(brain.pulse(), indent=2))
+    print(json.dumps(brain.report(), indent=2))
+
+
+def cmd_pulse(args: argparse.Namespace) -> None:
+    cmd_report(args)
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -56,7 +60,10 @@ def main(argv: list[str] | None = None) -> None:
     p_stats = sub.add_parser("stats", help="Database statistics")
     p_stats.set_defaults(func=cmd_stats)
 
-    p_pulse = sub.add_parser("pulse", help="Living brain vitals (domains, hubs, synapses)")
+    p_report = sub.add_parser("report", help="Corpus architecture report")
+    p_report.set_defaults(func=cmd_report)
+
+    p_pulse = sub.add_parser("pulse", help="Deprecated alias for report")
     p_pulse.set_defaults(func=cmd_pulse)
 
     args = parser.parse_args(argv)
