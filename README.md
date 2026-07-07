@@ -1,53 +1,45 @@
 # Coltex
 
-**Hypercortex v2 — The Living Brain** — the most advanced connected RAG knowledge architecture on earth. Six cortical layers, ten brain lobes, eighteen neural hubs, four memory tiers, and procedural growth to unlimited scale.
+**Enterprise RAG Knowledge Corpus** — the largest connected retrieval-augmented generation dataset with multi-layer architecture, graph-linked domains, knowledge clusters, and procedural expansion to unlimited scale.
 
-Coltex is a **living knowledge brain**: 62+ domain folders, thousands of graph-linked documents, inter-lobe pathways, synapses, and a premium export pipeline for commercial distribution.
+Coltex delivers a production-grade knowledge layer: 62+ domain folders, thousands of typed documents, cross-reference graph links, and a distributable export pipeline for commercial datasets.
 
 ---
 
-## Hypercortex Architecture
+## Knowledge Architecture
 
 ```
-                         ┌─── L6 Meta (Brain Identity) ───┐
-                         │   L5 Executive (Reranking)     │
-                         │   L4 Reasoning (GraphRAG)      │
-                         │   L3 Integration (Hubs)        │
-                         │   L2 Association (Metadata)    │
-                         │   L1 Sensory (Ingestion)       │
-                         └───────────────┬────────────────┘
-                                         │
-     ┌───────────┬───────────┬───────────┼───────────┬───────────┐
-     ▼           ▼           ▼           ▼           ▼           ▼
-  Frontal    Temporal    Parietal   Occipital    Limbic    Cerebellum
-     │           │           │           │           │           │
-     └───────────┴───────────┴─────► Thalamus ◄──────┴───────────┘
-                                   Amygdala
-                                         │
-              ┌──────────────────────────┼──────────────────────────┐
-              ▼                          ▼                          ▼
-         62+ Domains              18 Neural Hubs            4 Memory Tiers
-              │                          │                          │
-              └──────────► Synapses + Pathways ◄───────────────────┘
+                    ┌─── L6 Meta (Catalog & governance) ───┐
+                    │   L5 Executive (Context assembly)      │
+                    │   L4 Reasoning (GraphRAG)             │
+                    │   L3 Integration (Cluster assignment)  │
+                    │   L2 Association (Metadata)           │
+                    │   L1 Ingestion (Document intake)      │
+                    └─────────────────┬─────────────────────┘
+                                      │
+              ┌───────────────────────┼───────────────────────┐
+              ▼                       ▼                       ▼
+         62+ Domains            18 Knowledge Hubs       4 Memory Tiers
+              │                       │                       │
+              └──────────► Graph Links + Pathways ◄──────────┘
                                    │
-                    Vector + Metadata + NeuralRouter GraphRAG
+                    Vector + Metadata + GraphRouter
                                    │
-                          brain retrieve / pulse
+                        brain retrieve / report
 ```
 
 | Region | Path | Purpose |
 |--------|------|---------|
-| **Cortex L1–L6** | `living-brain/cortex/` | Six-layer processing stack |
-| **Lobes** | `living-brain/lobes/` | Frontal, temporal, parietal, occipital, limbic |
-| **Domains** | `living-brain/domains/` | 62+ technology categories |
-| **Hubs** | `living-brain/hubs/` | 18 neural service clusters |
-| **Synapses** | `living-brain/synapses/` | Hub-to-hub graph links |
-| **Pathways** | `living-brain/pathways/` | Inter-lobe neural routes |
-| **Memory** | `living-brain/memory/` | Working, episodic, semantic, procedural |
-| **Hippocampus** | `living-brain/hippocampus/` | Long-term consolidation |
-| **Reflexes** | `living-brain/reflexes/` | Instant-recall FAQs |
+| Processing layers | `knowledge-corpus/cortex/` | L1–L6 document processing stack |
+| Functional clusters | `knowledge-corpus/lobes/` | Domain groupings by function |
+| Domains | `knowledge-corpus/domains/` | 62+ technology categories |
+| Knowledge hubs | `knowledge-corpus/hubs/` | 18 service-level clusters |
+| Graph links | `knowledge-corpus/synapses/` | Hub-to-hub relationships |
+| Pathways | `knowledge-corpus/pathways/` | Inter-cluster routes |
+| Memory tiers | `knowledge-corpus/memory/` | Working, episodic, semantic, procedural |
+| Quick reference | `knowledge-corpus/reflexes/` | FAQ index |
 
-Full reference: [docs/architecture/hypercortex-v2.md](docs/architecture/hypercortex-v2.md)
+Architecture reference: [docs/architecture/knowledge-architecture.md](docs/architecture/knowledge-architecture.md)
 
 ---
 
@@ -57,60 +49,38 @@ Full reference: [docs/architecture/hypercortex-v2.md](docs/architecture/hypercor
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# Bootstrap Hypercortex v2 (500 docs + pathways + hub anchors + cortex layers)
-make living-brain-advanced
-
+make corpus-advanced
 make index
-python3 -m brain retrieve "Explain Hypercortex pathway routing" --context
-python3 -m brain pulse
+python3 -m brain retrieve "What is GraphRAG?" --context
+python3 -m brain report
 ```
 
 ---
 
-## Grow the Brain
+## Expand the Corpus
 
 | Command | Output |
 |---------|--------|
-| `make living-brain-advanced` | Full Hypercortex: 500 docs + pathways + 18 hub anchors |
-| `make living-brain-grow COUNT=1000` | Add 1,000 domain documents |
-| `make living-brain-mega` | **10,000** documents |
+| `make corpus-advanced` | Full architecture bootstrap (500 docs + pathways + hubs) |
+| `make corpus-grow COUNT=1000` | Add 1,000 domain documents |
+| `make corpus-mega` | 10,000 documents |
 | `make generate-mega` | 100,000 procedural documents |
 | `make generate-ultra` | 1,000,000 documents |
-| `make generate-hyper` | Uncapped (604T+ combinations) |
 
-Manifests: `data/brain/neural-map.json` · `data/brain/architecture-manifest.json`
+Catalog index: `data/brain/neural-map.json` · Architecture manifest: `data/brain/architecture-manifest.json`
 
 ---
 
-## Advanced Retrieval
+## Retrieval Engine
 
-Hypercortex enables **NeuralRouter** — region-aware GraphRAG with:
+Hybrid RAG pipeline with optional **GraphRouter** (region-aware graph expansion):
 
-- **4-hop** graph traversal (up from 2)
-- **20 relationship types** (extends, validates, synthesizes, triggers…)
-- **Region boost** for synapses (+15%), pathways (+12%), cortex L4/L5 (+10%)
-- **16 max** graph-expanded documents per query
-
-```yaml
-# config/brain.yaml
-graph:
-  advanced_routing: true
-  max_hops: 4
-  max_extra_chunks: 16
+```bash
+python3 -m brain index --reindex
+python3 -m brain retrieve "<query>" --context
+python3 -m brain stats
+python3 -m brain report
 ```
-
----
-
-## Scale
-
-| Metric | Current | Target |
-|--------|---------|--------|
-| Neural hubs | 18 | 18 |
-| Brain lobes | 10 | 10 |
-| Cortex layers | 6 | 6 |
-| Domains | 62+ | 62 |
-| Documents | 3,000+ | 250,000 |
-| Graph edges | 50,000+ | 1,000,000 |
 
 ---
 
@@ -119,14 +89,14 @@ graph:
 ```bash
 make product-premium-smoke   # 25,000 documents
 make product-premium         # Full pipeline
-make evaluate                # recall@8 benchmarks
+make evaluate                # Benchmark evidence
 ```
 
 ---
 
 ## Documentation
 
-- [Hypercortex v2 Architecture](docs/architecture/hypercortex-v2.md)
+- [Knowledge architecture](docs/architecture/knowledge-architecture.md)
 - [Product setup](docs/product-setup.md)
 - [Quality standards](docs/product-quality.md)
 - [Evaluation guide](docs/product-evaluation.md)

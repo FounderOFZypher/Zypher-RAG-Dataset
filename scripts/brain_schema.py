@@ -483,10 +483,10 @@ KNOWLEDGE_HUBS: list[KnowledgeHub] = [
         ),
     ),
     KnowledgeHub(
-        "coltex_living_brain",
-        "Coltex Living Brain Meta-Hub",
+        "coltex_knowledge_core",
+        "Coltex Knowledge Core",
         "rag",
-        ("Neural Map", "Pulse", "Synapses", "Cortex Layers", "Memory Tiers"),
+        ("Catalog Index", "Corpus Report", "Graph Links", "Processing Layers", "Memory Tiers"),
         (
             "deep_dive",
             "architecture_decision",

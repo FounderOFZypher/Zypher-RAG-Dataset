@@ -1,9 +1,9 @@
-# Coltex Advanced Living Brain Architecture
+# Coltex Advanced Knowledge Corpus Architecture
 # Multi-layer neural knowledge system — lobes, pathways, memory tiers, cortex layers
 
 architecture:
   version: "2.0"
-  codename: hypercortex
+  codename: knowledge_architecture
   tiers:
     - sensory       # L1 ingestion & raw signal
     - association   # L2-L4 domain linking
@@ -146,7 +146,7 @@ hub_registry:
   - slug: ci_cd_platform
     lobe: cerebellum
     tier: autonomic
-  - slug: coltex_living_brain
+  - slug: coltex_knowledge_core
     lobe: frontal
     tier: meta
   - slug: vector_store_cluster

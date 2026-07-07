@@ -1,4 +1,4 @@
-"""Advanced Coltex Living Brain architecture definitions."""
+"""Advanced Coltex Knowledge Corpus architecture definitions."""
 
 from __future__ import annotations
 
@@ -116,7 +116,7 @@ def all_architecture_domains(cfg: dict[str, Any] | None = None) -> list[str]:
     domains: set[str] = set()
     for lobe in brain_lobes(cfg):
         domains.update(lobe.domains)
-    for cat in (cfg.get("living_brain", {}) or {}).get("priority_domains", []):
+    for cat in (cfg.get("knowledge_corpus", {}) or {}).get("priority_domains", []):
         domains.add(cat)
     return sorted(domains)
 

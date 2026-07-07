@@ -117,15 +117,15 @@ class Coltex:
             "vector_store": str(self.vector_index.persist_dir),
         }
 
-    def pulse(self) -> dict[str, Any]:
-        """Living brain vitals — Hypercortex architecture stats."""
+    def report(self) -> dict[str, Any]:
+        """Corpus architecture report — document counts, graph density, catalog summary."""
         base = self.stats()
         domains: dict[str, int] = {}
         hubs: dict[str, int] = {}
-        lobes: dict[str, int] = {}
+        clusters: dict[str, int] = {}
         memory_tiers: dict[str, int] = {}
-        cortex_layers: dict[str, int] = {}
-        synapses = pathways = reflexes = 0
+        processing_layers: dict[str, int] = {}
+        graph_links = pathways = quick_reference = 0
         edges = 0
 
         for doc in self.kb.documents:
@@ -134,20 +134,20 @@ class Coltex:
                 cat = path.split("/domains/")[1].split("/")[0]
                 domains[cat] = domains.get(cat, 0) + 1
             if "/lobes/" in path:
-                lobe = path.split("/lobes/")[1].split("/")[0]
-                lobes[lobe] = lobes.get(lobe, 0) + 1
+                cluster = path.split("/lobes/")[1].split("/")[0]
+                clusters[cluster] = clusters.get(cluster, 0) + 1
             if "/memory/" in path:
                 tier = path.split("/memory/")[1].split("/")[0]
                 memory_tiers[tier] = memory_tiers.get(tier, 0) + 1
             for part in path.split("/"):
                 if part.startswith("L") and "-" in part and "/cortex/" in path:
-                    cortex_layers[part] = cortex_layers.get(part, 0) + 1
+                    processing_layers[part] = processing_layers.get(part, 0) + 1
             if "/synapses/" in path:
-                synapses += 1
+                graph_links += 1
             if "/pathways/" in path:
                 pathways += 1
             if "/reflexes/" in path:
-                reflexes += 1
+                quick_reference += 1
             if doc.hub:
                 hubs[doc.hub] = hubs.get(doc.hub, 0) + 1
             edges += len(doc.related) + sum(len(v) for v in doc.relationships.values())
@@ -169,35 +169,35 @@ class Coltex:
             except (json.JSONDecodeError, OSError):
                 pass
 
-        graph_density = round(edges / max(base["documents"], 1), 2)
-
         return {
             **base,
-            "hypercortex": {
-                "status": "alive" if base["documents"] > 0 else "dormant",
-                "codename": arch_manifest.get("codename", "hypercortex"),
+            "architecture": {
+                "status": "active" if base["documents"] > 0 else "empty",
                 "version": arch_manifest.get("version", "2.0"),
                 "advanced_routing": self.config.get("graph", {}).get("advanced_routing", False),
                 "domains": domains,
                 "domain_count": len(domains),
-                "lobes": lobes,
-                "lobe_count": len(lobes),
+                "clusters": clusters,
+                "cluster_count": len(clusters),
                 "hubs": hubs,
                 "hub_count": len(hubs),
                 "memory_tiers": memory_tiers,
-                "cortex_layers": cortex_layers,
-                "synapses": synapses,
+                "processing_layers": processing_layers,
+                "graph_links": graph_links,
                 "pathways": pathways,
-                "reflexes": reflexes,
+                "quick_reference": quick_reference,
                 "graph_edges": edges,
-                "graph_density": graph_density,
-                "neural_map": neural_map_path.exists(),
+                "graph_density": round(edges / max(base["documents"], 1), 2),
+                "catalog_index": neural_map_path.exists(),
                 "architecture_manifest": arch_path.exists(),
-                "scale_targets": arch_manifest.get("scale_targets"),
-                "neural_map_summary": {
+                "catalog_summary": {
                     "total_documents": neural_map.get("total_documents"),
                     "pathways": neural_map.get("pathways"),
                     "hubs_registered": neural_map.get("hubs_registered"),
                 } if neural_map else None,
             },
         }
+
+    def pulse(self) -> dict[str, Any]:
+        """Deprecated alias for report()."""
+        return self.report()
