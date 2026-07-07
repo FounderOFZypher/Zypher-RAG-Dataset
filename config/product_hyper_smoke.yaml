@@ -6,7 +6,7 @@ version: 2.1.0-smoke
 tier: premium-smoke
 price_usd: 1000
 license: Coltex-EULA
-eula: EULA.md
+eula: licenses/eula.md
 updated: 2026-07-07
 
 generation:

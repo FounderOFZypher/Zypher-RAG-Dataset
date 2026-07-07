@@ -27,22 +27,24 @@ def check_required_files(dist_cfg: dict) -> dict:
     require_personal = dist_cfg.get("require_personal_license", False)
     require_professional = dist_cfg.get("require_professional_license", False)
     require_enterprise = dist_cfg.get("require_enterprise_license", False)
+    licenses_dir = ROOT / "licenses"
     if require_eula:
-        required.append(("EULA.md", ROOT / "EULA.md"))
-        required.append(("knowledge-base/EULA.md", ROOT / "knowledge-base" / "EULA.md"))
+        required.append(("licenses/eula.md", licenses_dir / "eula.md"))
+        required.append(("licenses/README.md", licenses_dir / "README.md"))
     if require_personal:
-        required.append(("PERSONAL-LICENSE.md", ROOT / "PERSONAL-LICENSE.md"))
-        required.append(("knowledge-base/PERSONAL-LICENSE.md", ROOT / "knowledge-base" / "PERSONAL-LICENSE.md"))
+        required.append(("licenses/personal.md", licenses_dir / "personal.md"))
+        required.append(("licenses/README.md", licenses_dir / "README.md"))
     if require_professional:
-        required.append(("PROFESSIONAL-LICENSE.md", ROOT / "PROFESSIONAL-LICENSE.md"))
-        required.append(("knowledge-base/PROFESSIONAL-LICENSE.md", ROOT / "knowledge-base" / "PROFESSIONAL-LICENSE.md"))
+        required.append(("licenses/professional.md", licenses_dir / "professional.md"))
+        required.append(("licenses/README.md", licenses_dir / "README.md"))
     if require_enterprise:
-        required.append(("ENTERPRISE-LICENSE.md", ROOT / "ENTERPRISE-LICENSE.md"))
-        required.append(("knowledge-base/ENTERPRISE-LICENSE.md", ROOT / "knowledge-base" / "ENTERPRISE-LICENSE.md"))
+        required.append(("licenses/enterprise.md", licenses_dir / "enterprise.md"))
+        required.append(("licenses/README.md", licenses_dir / "README.md"))
     if not require_eula and not require_personal and not require_professional and not require_enterprise:
-        required.append(("PERSONAL-LICENSE.md", ROOT / "PERSONAL-LICENSE.md"))
-        required.append(("PROFESSIONAL-LICENSE.md", ROOT / "PROFESSIONAL-LICENSE.md"))
-        required.append(("EULA.md", ROOT / "EULA.md"))
+        required.append(("licenses/personal.md", licenses_dir / "personal.md"))
+        required.append(("licenses/professional.md", licenses_dir / "professional.md"))
+        required.append(("licenses/eula.md", licenses_dir / "eula.md"))
+        required.append(("licenses/README.md", licenses_dir / "README.md"))
     if dist_cfg.get("require_provenance", True):
         required.append(("knowledge-base/PROVENANCE.md", ROOT / "knowledge-base" / "PROVENANCE.md"))
     if dist_cfg.get("require_notice", True):

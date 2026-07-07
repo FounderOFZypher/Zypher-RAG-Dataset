@@ -4,7 +4,7 @@
 name: Coltex Product
 version: 1.0.0
 license: Coltex-EULA
-eula: EULA.md
+eula: licenses/eula.md
 updated: 2026-07-06
 
 # Curated sources only (exclude synthetic generated corpus for product builds)

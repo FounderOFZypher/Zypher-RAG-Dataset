@@ -10,7 +10,7 @@ License tiers and commercial packages for the Coltex RAG Vector Dataset.
 |---|---|--------------|------------------|
 | **SKU** | `coltex-personal-v1` | `coltex-professional-v1` | `coltex-enterprise-v3` / premium |
 | **Price** | **$79** one-time | **$399** one-time | **Custom quote** |
-| **License** | [PERSONAL-LICENSE.md](../PERSONAL-LICENSE.md) | [PROFESSIONAL-LICENSE.md](../PROFESSIONAL-LICENSE.md) | [ENTERPRISE-LICENSE.md](../ENTERPRISE-LICENSE.md) |
+| **License** | [personal.md](../../licenses/personal.md) | [professional.md](../../licenses/professional.md) | [enterprise.md](../../licenses/enterprise.md) |
 | **Use case** | Non-commercial | Commercial — one entity | Organization-wide deployment |
 | **Intended users** | Students, hobbyists, researchers | Freelancers, startups, dev shops | Businesses, government, education, enterprises |
 | **Build command** | `make product-personal` | `make product-professional` | `make product-enterprise` |
@@ -23,13 +23,13 @@ Non-commercial personal use. Learning, research, private projects.
 
 Everything in Personal, **plus** commercial rights: revenue-generating apps, customer-facing integrations, business deployment. One company or legal entity.
 
-See [PROFESSIONAL-LICENSE.md](../PROFESSIONAL-LICENSE.md) for full terms.
+See [licenses/professional.md](../../licenses/professional.md) for full terms.
 
 ### Enterprise — Custom Quote
 
 Everything in Professional, **plus** organization-wide deployment, multiple users and teams, private/customer cloud (AWS, Azure, GCP, Kubernetes), on-premises deployment, and enterprise services (deployment assistance, training, priority support, volume licensing).
 
-Enterprise RAG vector dataset packages include supplemental terms under the [EULA](../EULA.md). See commercial dataset tiers below.
+Enterprise RAG vector dataset packages include supplemental terms under the [Dataset EULA](../../licenses/eula.md). See commercial dataset tiers below.
 
 ---
 

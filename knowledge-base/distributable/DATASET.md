@@ -41,7 +41,7 @@ make audit-distribution     # Compliance check
 
 ## Compliance
 
-- **License:** Personal ($79) · Professional ($399) · Enterprise (custom quote) — see [PERSONAL-LICENSE.md](../../PERSONAL-LICENSE.md), [PROFESSIONAL-LICENSE.md](../../PROFESSIONAL-LICENSE.md), [ENTERPRISE-LICENSE.md](../../ENTERPRISE-LICENSE.md), [EULA.md](../../EULA.md)
+- **License:** See [licenses/README.md](../../licenses/README.md)
 - **Provenance:** `knowledge-base/PROVENANCE.md`
 - **Audit:** `benchmarks/distribution_audit.json` (after build)
 

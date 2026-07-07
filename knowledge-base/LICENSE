@@ -2,25 +2,6 @@
 
 Copyright 2026 Elijah Maxwell / Coltex
 
-Coltex is offered under four license tiers. See [LICENSING.md](../LICENSING.md) for the full tier comparison and terms.
+All license terms are in the dedicated licenses section:
 
-## Personal License ($79)
-
-For students, hobbyists, and researchers. Non-commercial use only.
-
-## Professional License ($399)
-
-For freelancers, startups, and commercial developers. Includes Personal rights plus commercial use for one company or legal entity.
-
-## Enterprise License (custom quote)
-
-For medium and large businesses, government, education, and enterprises. Includes Professional rights plus organization-wide deployment, multiple teams, private/on-prem cloud, and enterprise services per agreement.
-
-## Dataset EULA
-
-Supplemental terms for enterprise RAG vector dataset packages (chunks, embeddings, graph edges, benchmarks).
-
-## Excluded paths
-
-Files under `knowledge-base/_excluded_from_distribution/` and
-`knowledge-base/generated/` are not part of any product package.
+**[licenses/README.md](../licenses/README.md)**

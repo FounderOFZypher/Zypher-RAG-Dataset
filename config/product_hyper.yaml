@@ -7,7 +7,7 @@ version: 2.1.0
 tier: premium
 price_usd: 1000
 license: Coltex-EULA
-eula: EULA.md
+eula: licenses/eula.md
 updated: 2026-07-07
 
 # Hyper-scale generation (procedural streaming — no memory blowup)

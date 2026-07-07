@@ -8,11 +8,13 @@ Coltex is a fully auditable, graph-linked, vector-ready knowledge dataset design
 
 ## License tiers
 
-| Tier | Price | License |
-|------|-------|---------|
-| **Personal** | $79 USD (one-time) | [PERSONAL-LICENSE.md](../../PERSONAL-LICENSE.md) |
-| **Professional** | $399 USD (one-time) | [PROFESSIONAL-LICENSE.md](../../PROFESSIONAL-LICENSE.md) |
-| **Enterprise** | Custom quote | [ENTERPRISE-LICENSE.md](../../ENTERPRISE-LICENSE.md) |
+| Tier | Price | Document |
+|------|-------|----------|
+| **Personal** | $79 USD (one-time) | [licenses/personal.md](../../licenses/personal.md) |
+| **Professional** | $399 USD (one-time) | [licenses/professional.md](../../licenses/professional.md) |
+| **Enterprise** | Custom quote | [licenses/enterprise.md](../../licenses/enterprise.md) |
+
+Full tier comparison: [licenses/README.md](../../licenses/README.md)
 
 ---
 
@@ -65,7 +67,7 @@ Six processing layers (L1 ingestion through L6 governance), ten functional clust
 | `manifest.json` | JSON | SHA-256 checksums and build provenance |
 | `benchmarks/` | JSONL | FAQ, retrieval gold, RAG eval sets |
 
-Compliance files: `PERSONAL-LICENSE.md`, `PROFESSIONAL-LICENSE.md`, `ENTERPRISE-LICENSE.md`, `EULA.md`, plus `NOTICE`, `PROVENANCE.md`, `distribution_audit.json`
+Compliance files: `licenses/`, `NOTICE`, `PROVENANCE.md`, `distribution_audit.json`
 
 ---
 
@@ -90,4 +92,4 @@ See [SKU matrix](sku-matrix.md) for tier comparison and [datasheet](datasheet.md
 
 ## License
 
-**Personal ($79)**, **Professional ($399)**, **Enterprise (custom quote)**, or **Dataset EULA**. See [PERSONAL-LICENSE.md](../../PERSONAL-LICENSE.md), [PROFESSIONAL-LICENSE.md](../../PROFESSIONAL-LICENSE.md), [ENTERPRISE-LICENSE.md](../../ENTERPRISE-LICENSE.md), and [product licensing](../product-licensing.md).
+See [licenses/README.md](../../licenses/README.md) for license tiers and terms.

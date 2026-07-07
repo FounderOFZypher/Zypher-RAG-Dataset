@@ -6,7 +6,7 @@ version: 1.0.0
 tier: professional
 price_usd: 399
 license: Coltex-Professional
-license_path: PROFESSIONAL-LICENSE.md
+license_path: licenses/professional.md
 updated: 2026-07-07
 
 knowledge_base:

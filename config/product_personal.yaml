@@ -6,7 +6,7 @@ version: 1.0.0
 tier: personal
 price_usd: 79
 license: Coltex-Personal
-license_path: PERSONAL-LICENSE.md
+license_path: licenses/personal.md
 updated: 2026-07-07
 
 knowledge_base:

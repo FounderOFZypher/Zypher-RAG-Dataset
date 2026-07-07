@@ -7,8 +7,8 @@ tier: enterprise
 price_usd: null
 pricing: custom_quote
 license: Coltex-Enterprise
-license_path: ENTERPRISE-LICENSE.md
-dataset_agreement: EULA.md
+license_path: licenses/enterprise.md
+dataset_agreement: licenses/eula.md
 updated: 2026-07-07
 
 # Full curated knowledge base including architecture corpus

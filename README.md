@@ -131,7 +131,7 @@ Commercial builds output to `data/product/`:
 | `manifest.json` | JSON | SHA-256 checksums and build provenance |
 | `benchmarks/` | JSONL | FAQ, retrieval gold, and RAG evaluation sets |
 
-Compliance artifacts include `NOTICE`, `PROVENANCE.md`, and `distribution_audit.json`. Terms of use: [LICENSING.md](LICENSING.md).
+Compliance artifacts include `NOTICE`, `PROVENANCE.md`, and `distribution_audit.json`.
 
 ---
 
@@ -145,7 +145,7 @@ Compliance artifacts include `NOTICE`, `PROVENANCE.md`, and `distribution_audit.
 | Premium Standard | `make product-premium-smoke` | 25,000 | Validation and evaluation |
 | Premium Hyper | `make product-hyper` | Uncapped | Maximum-scale production |
 
-Package and license comparison: [SKU matrix](docs/commercial/sku-matrix.md)
+Full comparison: [SKU matrix](docs/commercial/sku-matrix.md)
 
 ---
 
@@ -167,7 +167,7 @@ Architecture manifest: `data/brain/architecture-manifest.json`
 
 | Document | Description |
 |----------|-------------|
-| [Licensing](LICENSING.md) | License tiers, terms, and build commands |
+| [Licenses](licenses/README.md) | License tiers, terms, and build commands |
 | [Product overview](docs/commercial/product-overview.md) | Commercial positioning and use cases |
 | [Technical datasheet](docs/commercial/datasheet.md) | Dataset specifications |
 | [SKU matrix](docs/commercial/sku-matrix.md) | Package comparison |
@@ -179,4 +179,4 @@ Architecture manifest: `data/brain/architecture-manifest.json`
 
 ## Copyright
 
-Copyright © 2026 Elijah Maxwell / Coltex. All rights reserved. See [LICENSING.md](LICENSING.md) for terms of use.
+Copyright © 2026 Elijah Maxwell / Coltex. All rights reserved.
