@@ -1,12 +1,10 @@
-"""Coltex V1 dashboard — honest metrics, nothing fake."""
+"""Coltex V1 dashboard — honest metrics."""
 
 from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-
-ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 class V1Dashboard:
@@ -18,13 +16,14 @@ class V1Dashboard:
         brain = self._rt.brain.stats()
         usage = self._rt.ask.usage_stats()
         sources = self._rt.sources.count()
+        graph = self._rt.graph.stats()
 
         dup_count = self._count_duplicate_groups()
         outdated = self._count_outdated()
-
         last_sync = self._last_sync_time()
+        ws = self._rt.workspace
 
-        return {
+        payload = {
             "product": "Coltex V1",
             "tagline": "The AI Knowledge Platform for Modern Organizations",
             "dashboard": {
@@ -37,14 +36,23 @@ class V1Dashboard:
                     "knowledge_score": health.get("knowledge_score", 0),
                     "documents": brain.get("documents", 0),
                     "embeddings": brain.get("indexed_vectors", 0),
+                    "graph_nodes": graph.get("graph_edges", 0) + brain.get("documents", 0),
                     "duplicates": dup_count,
                     "outdated": outdated,
                 },
             },
         }
+        if ws is not None:
+            payload["workspace"] = {
+                "name": ws.name,
+                "manifest": str(ws.manifest_path),
+                "size_bytes": ws.dir_size_bytes(),
+            }
+        return payload
 
     def _count_duplicate_groups(self) -> int:
         from collections import Counter
+
         titles = [d.title.strip().lower() for d in self._rt.brain.kb.documents if d.title]
         if not titles:
             return 0
@@ -61,7 +69,7 @@ class V1Dashboard:
         return min(count, 999)
 
     def _last_sync_time(self) -> str | None:
-        log = ROOT / "data/runtime/events.jsonl"
+        log = self._rt.data_dir / "events.jsonl"
         if log.exists():
             try:
                 ts = datetime.fromtimestamp(log.stat().st_mtime, tz=timezone.utc)

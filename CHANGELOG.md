@@ -2,6 +2,16 @@
 
 All notable changes to the Coltex product package are documented here.
 
+## [4.10.0] - 2026-07-08
+
+### Added — Native `.ctex` workspaces
+
+- **Workspace as project file** — `coltex new`, `open`, `build`, `status`, `validate`, `export`, `import`
+- **`.ctex` manifest** — auto-managed metadata (UUID, settings, stats, health); never stores vectors or documents
+- **Workspace layout** — knowledge/, documents/, embeddings/, graph/, metadata/, settings/, runtime/
+- **Session tracking** — `.coltex-session` and `COLTEX_WORKSPACE` for active workspace
+- **`coltex` CLI entry point** — `./coltex` or `python3 -m runtime`
+
 ## [4.9.0] - 2026-07-08
 
 ### Changed — Coltex V1 is CLI-only, MIT licensed

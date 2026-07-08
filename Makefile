@@ -39,10 +39,19 @@ corpus-links:
 
 # Coltex Runtime CLI
 runtime-status:
-	python3 -m runtime status
+	python3 coltex status
+
+runtime-new:
+	python3 coltex new DemoWorkspace
+
+runtime-build:
+	python3 coltex build
+
+runtime-validate:
+	python3 coltex validate
 
 runtime-dashboard:
-	python3 -m runtime dashboard
+	python3 coltex dashboard
 
 runtime-health:
 	python3 -m runtime health

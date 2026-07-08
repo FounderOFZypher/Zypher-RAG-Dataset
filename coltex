@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""Coltex CLI entry point."""
+
+from runtime.__main__ import main
+
+if __name__ == "__main__":
+    main()

@@ -1,130 +1,95 @@
-# Coltex V1
+# Coltex V1 — `.ctex` Workspaces
 
 **Tagline:** The AI Knowledge Platform for Modern Organizations
 
 **Goal:** Turn scattered business knowledge into AI-ready intelligence in under 10 minutes.
 
-Coltex V1 is a **local CLI tool**. No website. No cloud service.
+Coltex V1 is a **local CLI**. The primary unit of work is a **Coltex Workspace (`.ctex`)** — the official project file, similar to `.uproject` or `.blend`.
 
 ---
 
-## CLI Commands
+## Create a workspace
+
+```bash
+coltex new MyWorkspace
+```
+
+Generates:
+
+```
+MyWorkspace/
+├── MyWorkspace.ctex
+├── knowledge/
+├── documents/
+├── embeddings/
+├── graph/
+├── metadata/
+├── cache/
+├── indexes/
+├── logs/
+├── backups/
+├── settings/
+└── runtime/
+```
+
+---
+
+## Workspace commands
 
 | Command | Purpose |
 |---------|---------|
-| `status` | Runtime and engine status |
-| `dashboard` | Documents, sources, searches, AI queries, last sync, health |
-| `knowledge` | Browse knowledge objects |
-| `sources` | List uploaded sources |
-| `upload <path>` | Upload and process a file |
-| `search "<query>"` | Universal search |
-| `ask "<question>"` | Ask Knowledge — sources, confidence, why |
-| `health` | Knowledge Health metrics |
-| `settings` | Workspace, embedding model, chunk size |
-| `curator` | Proactive knowledge alerts |
-| `monitor` | Runtime metrics |
-| `explain "<query>"` | Retrieval explainability |
+| `coltex new <name>` | Create workspace |
+| `coltex open <file.ctex>` | Open workspace |
+| `coltex build` | Process, chunk, embed, index, validate |
+| `coltex status` | Workspace stats and health |
+| `coltex validate` | Integrity checks |
+| `coltex export` | Portable archive |
+| `coltex import <archive>` | Restore workspace |
 
-```bash
-python3 -m runtime status
-python3 -m runtime upload path/to/document.pdf
-python3 -m runtime ask "What is our refund policy?"
-python3 -m runtime search "authentication"
-python3 -m runtime dashboard
+Opening a workspace:
+
+```
+Opening Workspace...
+
+Workspace: MyWorkspace
+Coltex Version: 1.0
+Knowledge Health: 97%
+Documents: 482
+Embeddings: 19,304
+Graph Nodes: 52,101
+Last Build: 2 minutes ago
+
+Workspace Ready.
 ```
 
 ---
 
-## Knowledge Sources
+## `.ctex` manifest
 
-### Supported (V1)
+The manifest stores workspace metadata — never large data:
 
-| Format | Extension |
-|--------|-----------|
-| PDF | `.pdf` |
-| Word | `.docx` |
-| Markdown | `.md` |
-| Text | `.txt` |
-| HTML | `.html` |
-| JSON | `.json` |
+- Workspace name, UUID, Coltex version
+- Created / modified dates
+- Knowledge source locations
+- AI provider, embedding model, retrieval settings
+- Graph and search configuration
+- Statistics and health
+- User settings
 
-```bash
-python3 -m runtime upload path/to/document.pdf
-python3 -m runtime sources
-```
-
-### Planned connectors
-
-GitHub · Notion · Google Drive
-
-```bash
-python3 -m runtime connector filesystem
-```
+Updated automatically on upload, build, sync, and other operations.
 
 ---
 
-## AI Processing (automatic)
-
-```
-Upload → Parse → Clean → Chunk → Metadata → Embeddings → Index → Done
-```
-
-Triggered on every upload. Technical steps stay hidden unless you inspect pipeline output.
-
----
-
-## Universal Search
-
-One command searches documents, metadata, code references, APIs, and SQL patterns:
+## Knowledge commands
 
 ```bash
-python3 -m runtime search "JWT authentication"
+coltex upload path/to/document.pdf
+coltex search "authentication"
+coltex ask "How do we handle refunds?"
+coltex sources
+coltex knowledge
+coltex settings
 ```
-
----
-
-## Ask Knowledge
-
-Not "Ask AI" — **Ask Knowledge**.
-
-```
-Question → Retrieve → Build Context → Answer → Sources + Confidence + Why
-```
-
-```bash
-python3 -m runtime ask "How do we handle password resets?"
-```
-
----
-
-## Knowledge Health
-
-```bash
-python3 -m runtime health
-python3 -m runtime dashboard
-```
-
-Shows honest metrics: knowledge score, document count, embeddings, duplicates, outdated content.
-
----
-
-## Settings
-
-```bash
-python3 -m runtime settings
-```
-
-Workspace name, AI provider, embedding model, chunk size — stored locally in `data/runtime/settings.json`.
-
----
-
-## V1 Architecture
-
-```
-Knowledge Sources → Processing → Knowledge Store → Search → Ask Knowledge → Analytics
-```
-
-Config: `config/v1.yaml`
 
 ---
 

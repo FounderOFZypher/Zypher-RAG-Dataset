@@ -7,29 +7,46 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parent.parent.parent
-
 SUPPORTED = {".pdf", ".docx", ".md", ".markdown", ".txt", ".html", ".htm", ".json"}
 
 
 class SourceManager:
-    def __init__(self, inbox_dir: str = "data/sources/inbox", processed_dir: str = "knowledge-base/uploads"):
-        self.inbox = ROOT / inbox_dir
-        self.processed = ROOT / processed_dir
+    def __init__(
+        self,
+        inbox_dir: Path | str | None = None,
+        processed_dir: Path | str | None = None,
+        workspace=None,
+    ):
+        if workspace is not None:
+            self.inbox = workspace.documents_inbox
+            self.processed = workspace.knowledge
+            self._root = workspace.root
+        else:
+            from runtime.runtime import ROOT
+
+            self.inbox = Path(inbox_dir or ROOT / "data/sources/inbox")
+            self.processed = Path(processed_dir or ROOT / "knowledge-base/uploads")
+            self._root = ROOT
         self.inbox.mkdir(parents=True, exist_ok=True)
         self.processed.mkdir(parents=True, exist_ok=True)
 
     def list_sources(self) -> list[dict[str, Any]]:
         sources = []
         for directory in (self.inbox, self.processed):
+            if not directory.exists():
+                continue
             for path in sorted(directory.rglob("*")):
                 if path.is_file() and path.suffix.lower() in SUPPORTED:
+                    try:
+                        rel = str(path.relative_to(self._root))
+                    except ValueError:
+                        rel = str(path)
                     sources.append({
                         "name": path.name,
                         "format": path.suffix.lstrip(".").lower(),
-                        "path": str(path.relative_to(ROOT)),
+                        "path": rel,
                         "size_bytes": path.stat().st_size,
-                        "status": "inbox" if "inbox" in str(path) else "processed",
+                        "status": "inbox" if "inbox" in path.parts else "processed",
                     })
         return sources
 
@@ -44,11 +61,17 @@ class SourceManager:
         if source_path.resolve() != dest.resolve():
             shutil.copy2(source_path, dest)
 
+        try:
+            rel = str(dest.relative_to(self._root))
+        except ValueError:
+            rel = str(dest)
+
         return {
             "status": "uploaded",
             "name": dest.name,
             "format": dest.suffix.lstrip(".").lower(),
-            "path": str(dest.relative_to(ROOT)),
+            "path": rel,
+            "absolute_path": str(dest.resolve()),
             "uploaded_at": datetime.now(timezone.utc).isoformat(),
         }
 

@@ -19,8 +19,11 @@ mlruns/
 # Generated corpus (regenerate with `make generate`)
 knowledge-base/generated/
 
-# User uploads (created by runtime upload / Knowledge Studio)
+# User uploads (created by runtime upload)
 knowledge-base/uploads/
+
+# Active Coltex workspace session
+.coltex-session
 
 # Premium streaming samples (regenerate with `make product-premium`)
 knowledge-base/distributable/_samples/

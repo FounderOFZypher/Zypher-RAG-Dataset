@@ -8,13 +8,24 @@ from typing import Any
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent.parent
-
 
 class SettingsStore:
-    def __init__(self, path: str = "data/runtime/settings.json", defaults_path: str = "config/v1.yaml"):
-        self.path = ROOT / path
-        self.defaults_path = ROOT / defaults_path
+    def __init__(
+        self,
+        path: str | Path | None = None,
+        defaults_path: str | Path | None = None,
+        workspace=None,
+    ):
+        if workspace is not None:
+            self.path = workspace.settings_json_path
+            self.defaults_path = Path(__file__).resolve().parent.parent.parent / "config/v1.yaml"
+            self._workspace = workspace
+        else:
+            from runtime.runtime import ROOT
+
+            self.path = Path(path or ROOT / "data/runtime/settings.json")
+            self.defaults_path = Path(defaults_path or ROOT / "config/v1.yaml")
+            self._workspace = None
         self.path.parent.mkdir(parents=True, exist_ok=True)
 
     def load(self) -> dict[str, Any]:
@@ -31,17 +42,22 @@ class SettingsStore:
         current = self.load()
         current.update(updates)
         self.path.write_text(json.dumps(current, indent=2), encoding="utf-8")
+        if self._workspace is not None:
+            self._workspace.write_brain_config(current)
         return current
 
     def _defaults(self) -> dict[str, Any]:
         if self.defaults_path.exists():
             cfg = yaml.safe_load(self.defaults_path.read_text(encoding="utf-8"))
-            return dict(cfg.get("settings", {}).get("defaults", {}))
-        return {
-            "workspace": "default",
+            defaults = dict(cfg.get("settings", {}).get("defaults", {}))
+            if self._workspace is not None:
+                defaults["workspace"] = self._workspace.name
+            return defaults
+        base = {
+            "workspace": self._workspace.name if self._workspace else "default",
             "ai_provider": "local",
             "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
             "chunk_size": 2000,
-            "users": 1,
             "backup_enabled": False,
         }
+        return base

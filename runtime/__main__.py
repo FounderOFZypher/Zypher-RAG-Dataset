@@ -4,61 +4,125 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
+from pathlib import Path
+
+from runtime.workspace.manager import WorkspaceManager
 
 
-def _rt(config: str):
+def _rt(args: argparse.Namespace):
     from runtime.runtime import ColtexRuntime
-    return ColtexRuntime(config_path=config)
+    return ColtexRuntime.from_active_workspace(config_path=args.config)
+
+
+def cmd_new(args: argparse.Namespace) -> None:
+    mgr = WorkspaceManager()
+    ctx = mgr.create(args.name, base_dir=args.path)
+    set_active = not args.no_open
+    if set_active:
+        mgr.open(ctx.manifest_path, activate=True)
+        rt = ColtexRuntime_with_workspace(args.config, ctx)
+        print(mgr.startup_message(ctx, rt))
+    else:
+        print(f"Created workspace: {ctx.manifest_path}")
+        print(f"Open with: coltex open {ctx.manifest_path}")
+
+
+def ColtexRuntime_with_workspace(config: str, ctx):
+    from runtime.runtime import ColtexRuntime
+    return ColtexRuntime(config_path=config, workspace=ctx)
+
+
+def cmd_open(args: argparse.Namespace) -> None:
+    mgr = WorkspaceManager()
+    path = Path(args.workspace)
+    ctx = mgr.open(path, activate=True)
+    rt = ColtexRuntime_with_workspace(args.config, ctx)
+    print(mgr.startup_message(ctx, rt))
+
+
+def cmd_build(args: argparse.Namespace) -> None:
+    rt = _rt(args)
+    result = WorkspaceManager().build(rt)
+    print(json.dumps(result, indent=2))
 
 
 def cmd_status(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).status(), indent=2))
+    rt = _rt(args)
+    if rt.workspace is not None:
+        print(json.dumps(rt.workspace_status(), indent=2))
+    else:
+        print(json.dumps(rt.status(), indent=2))
 
 
-def cmd_health(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).analytics.health(), indent=2))
+def cmd_validate(args: argparse.Namespace) -> None:
+    rt = _rt(args)
+    result = WorkspaceManager().validate(rt)
+    print(json.dumps(result, indent=2))
+    if not result.get("passed", False):
+        sys.exit(1)
+
+
+def cmd_export(args: argparse.Namespace) -> None:
+    rt = _rt(args)
+    output = Path(args.output) if args.output else None
+    result = WorkspaceManager().export(rt, output)
+    print(json.dumps(result, indent=2))
+
+
+def cmd_import(args: argparse.Namespace) -> None:
+    mgr = WorkspaceManager()
+    ctx = mgr.import_workspace(Path(args.archive), Path(args.dest) if args.dest else None)
+    rt = ColtexRuntime_with_workspace(args.config, ctx)
+    print(mgr.startup_message(ctx, rt))
 
 
 def cmd_dashboard(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).v1.snapshot(), indent=2))
+    print(json.dumps(_rt(args).v1.snapshot(), indent=2))
+
+
+def cmd_health(args: argparse.Namespace) -> None:
+    print(json.dumps(_rt(args).analytics.health(), indent=2))
 
 
 def cmd_curator(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
+    rt = _rt(args)
     result = rt.curator.proactive_scan(save=not args.no_save)
+    rt.sync_workspace_manifest()
     print(json.dumps(result, indent=2))
 
 
 def cmd_monitor(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).monitor.snapshot(), indent=2))
+    print(json.dumps(_rt(args).monitor.snapshot(), indent=2))
 
 
 def cmd_explain(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
+    rt = _rt(args)
     rt.brain.index(force=False)
     print(json.dumps(rt.explain.explain(args.query), indent=2))
 
 
 def cmd_ingest(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).ingest(args.document_id, source=args.source), indent=2))
+    print(json.dumps(_rt(args).ingest(args.document_id, source=args.source), indent=2))
 
 
 def cmd_search(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
-    print(json.dumps(rt.universal_search(args.query), indent=2))
+    print(json.dumps(_rt(args).universal_search(args.query), indent=2))
 
 
 def cmd_ask(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
-    print(json.dumps(rt.ask.ask(args.question), indent=2))
+    rt = _rt(args)
+    result = rt.ask.ask(args.question)
+    rt.sync_workspace_manifest()
+    print(json.dumps(result, indent=2))
 
 
 def cmd_upload(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).upload_and_process(args.path), indent=2))
+    print(json.dumps(_rt(args).upload_and_process(args.path), indent=2))
 
 
 def cmd_sources(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
+    rt = _rt(args)
     print(json.dumps({
         "sources": rt.sources.list_sources(),
         "count": rt.sources.count(),
@@ -67,7 +131,7 @@ def cmd_sources(args: argparse.Namespace) -> None:
 
 
 def cmd_settings(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
+    rt = _rt(args)
     if args.set:
         key, _, value = args.set.partition("=")
         if not key:
@@ -75,20 +139,22 @@ def cmd_settings(args: argparse.Namespace) -> None:
             return
         current = rt.settings.load()
         current[key.strip()] = value.strip()
-        print(json.dumps(rt.settings.save(current), indent=2))
+        result = rt.settings.save(current)
+        rt.sync_workspace_manifest()
+        print(json.dumps(result, indent=2))
     else:
         print(json.dumps(rt.settings.load(), indent=2))
 
 
 def cmd_events(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
+    rt = _rt(args)
     if args.simulate:
         rt.ingest(args.document_id or "SIM-DOC-001", source="simulation")
     print(json.dumps({"events": rt.event_bus.recent, "stats": rt.event_bus.stats()}, indent=2))
 
 
 def cmd_knowledge(args: argparse.Namespace) -> None:
-    rt = _rt(args.config)
+    rt = _rt(args)
     if args.document_id:
         print(json.dumps(rt.knowledge_dna(args.document_id), indent=2))
     else:
@@ -96,18 +162,40 @@ def cmd_knowledge(args: argparse.Namespace) -> None:
 
 
 def cmd_connector(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args.config).sync_connector(args.connector_id), indent=2))
+    print(json.dumps(_rt(args).sync_connector(args.connector_id), indent=2))
 
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         prog="coltex",
-        description="Coltex V1 — local CLI for AI-ready knowledge",
+        description="Coltex — local AI knowledge workspaces (.ctex)",
     )
     parser.add_argument("--config", default="config/runtime.yaml")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    sub.add_parser("status", help="Runtime and engine status").set_defaults(func=cmd_status)
+    p_new = sub.add_parser("new", help="Create a new .ctex workspace")
+    p_new.add_argument("name", help="Workspace name")
+    p_new.add_argument("--path", type=Path, default=Path.cwd(), help="Parent directory")
+    p_new.add_argument("--no-open", action="store_true", help="Do not activate after create")
+    p_new.set_defaults(func=cmd_new)
+
+    p_open = sub.add_parser("open", help="Open an existing .ctex workspace")
+    p_open.add_argument("workspace", help="Path to .ctex manifest")
+    p_open.set_defaults(func=cmd_open)
+
+    sub.add_parser("build", help="Build or rebuild the active workspace").set_defaults(func=cmd_build)
+    sub.add_parser("status", help="Workspace or runtime status").set_defaults(func=cmd_status)
+    sub.add_parser("validate", help="Validate workspace integrity").set_defaults(func=cmd_validate)
+
+    p_export = sub.add_parser("export", help="Export workspace archive")
+    p_export.add_argument("--output", default="", help="Output .ctex.zip path")
+    p_export.set_defaults(func=cmd_export)
+
+    p_import = sub.add_parser("import", help="Import a workspace archive")
+    p_import.add_argument("archive", help="Path to .ctex.zip archive")
+    p_import.add_argument("--dest", default="", help="Destination directory")
+    p_import.set_defaults(func=cmd_import)
+
     sub.add_parser("dashboard", help="Dashboard metrics").set_defaults(func=cmd_dashboard)
     sub.add_parser("health", help="Knowledge Health scores").set_defaults(func=cmd_health)
 
