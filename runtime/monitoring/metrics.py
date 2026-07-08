@@ -1,14 +1,26 @@
-"""Runtime operational metrics — enterprise monitoring view."""
+"""Runtime operational metrics."""
 
 from __future__ import annotations
 
 import os
-import resource
 import time
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent.parent
+
+
+def _memory_mb() -> float | None:
+    """Return process memory in MB. `resource` is Unix-only; skip on Windows."""
+    try:
+        import resource
+
+        mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        if os.name == "darwin":
+            return round(mem / (1024 * 1024), 1)
+        return round(mem / 1024, 1)
+    except (ImportError, AttributeError):
+        return None
 
 
 class RuntimeMonitor:
@@ -22,9 +34,7 @@ class RuntimeMonitor:
             self._search_latencies = self._search_latencies[-100:]
 
     def snapshot(self) -> dict[str, Any]:
-        mem_mb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
-        if os.name != "darwin":
-            mem_mb = mem_mb / 1024  # Linux reports KB
+        mem_mb = _memory_mb()
 
         brain_stats = self._rt.brain.stats()
         graph_stats = self._rt.graph.stats()
@@ -47,7 +57,7 @@ class RuntimeMonitor:
             "engine": "monitor",
             "status": "active",
             "runtime": {
-                "memory_mb": round(mem_mb, 1),
+                "memory_mb": mem_mb,
                 "pid": os.getpid(),
                 "uptime_events": event_stats.get("total_events", 0),
             },
