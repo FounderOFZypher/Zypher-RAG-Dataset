@@ -63,14 +63,21 @@ class ColtexRuntime:
             self.data_dir = workspace.runtime_dir
             self.data_dir.mkdir(parents=True, exist_ok=True)
             brain_config = workspace.load_brain_config()
-            self.brain = Coltex(config=brain_config)
+            self.plugins = PluginManager()
+            plugin_sdk.init(self.plugins)
+            self.brain = Coltex(config=brain_config, plugin_manager=self.plugins)
             log_path = workspace.event_log_path
             events_cfg = ROOT / self.config.get("events_config", "config/events.yaml")
         else:
             self.data_dir = ROOT / self.config.get("runtime", {}).get("data_dir", "data/runtime")
             self.data_dir.mkdir(parents=True, exist_ok=True)
             brain_cfg = self.config.get("brain_config", "config/brain.yaml")
-            self.brain = Coltex(config_path=ROOT / brain_cfg if not Path(brain_cfg).is_absolute() else brain_cfg)
+            self.plugins = PluginManager()
+            plugin_sdk.init(self.plugins)
+            self.brain = Coltex(
+                config_path=ROOT / brain_cfg if not Path(brain_cfg).is_absolute() else brain_cfg,
+                plugin_manager=self.plugins,
+            )
             log_path = self.config.get("runtime", {}).get("event_log", "data/runtime/events.jsonl")
             events_cfg = self.config.get("events_config", "config/events.yaml")
 
@@ -85,8 +92,6 @@ class ColtexRuntime:
         self.search = SearchEngine(self.brain)
         self.memory = MemoryEngine(self.brain)
         self.scheduler = SchedulerEngine()
-        self.plugins = PluginManager()
-        plugin_sdk.init(self.plugins)
         self.retrieval = RetrievalEngine(self.brain)
         self.graph = GraphEngine(self.brain)
         self.curator = CuratorEngine(self.brain, self.event_bus, self.data_dir)
@@ -97,6 +102,14 @@ class ColtexRuntime:
         self.studio = ColtexCLI(self)
         self.ask = AskKnowledge(self)
         self.v1 = V1Dashboard(self)
+
+        from runtime.engines.multi_workspace import MultiWorkspaceSearch
+        self.multi_workspace = MultiWorkspaceSearch()
+        if workspace is not None:
+            try:
+                self.multi_workspace.add_workspace(workspace.manifest_path)
+            except Exception:
+                pass
 
         self.connectors = ConnectorRegistry()
         self.connectors.register(FilesystemConnector())
@@ -156,6 +169,7 @@ class ColtexRuntime:
                 "docs": "docs/product/coltex-v1.md",
                 "license": "MIT",
             },
+            "capabilities": self.capabilities(),
             "engines": {
                 "intelligence": self.intelligence.stats(),
                 "search": self.search.stats(),
@@ -241,6 +255,31 @@ class ColtexRuntime:
                 return data
         return {"error": "not_found", "document_id": document_id}
 
+    def universal_search(
+        self,
+        query: str,
+        mode: str | None = None,
+        filters: dict[str, Any] | None = None,
+        top_k: int | None = None,
+        explain: bool = False,
+    ) -> dict[str, Any]:
+        return self.search.search(query, mode=mode, filters=filters, top_k=top_k, explain=explain)
+
+    def federated_search(
+        self,
+        query: str,
+        mode: str | None = "hybrid",
+        top_k: int = 10,
+    ) -> dict[str, Any]:
+        return self.multi_workspace.search(query, mode=mode, top_k=top_k)
+
+    def capabilities(self) -> dict[str, Any]:
+        caps = self.brain.capabilities()
+        caps["multi_workspace"] = True
+        caps["plugin_system"] = True
+        caps["workspaces_loaded"] = self.multi_workspace.list_workspaces()
+        return caps
+
     def upload_and_process(self, file_path: str | Path) -> dict[str, Any]:
         uploaded = self.sources.upload(Path(file_path))
         if "error" in uploaded:
@@ -248,12 +287,7 @@ class ColtexRuntime:
         inbox = Path(uploaded.get("absolute_path", uploaded["path"]))
         if not inbox.is_absolute():
             inbox = ROOT / inbox
-        return self.processing.process(inbox)
-
-    def universal_search(self, query: str) -> dict[str, Any]:
-        self.brain.index(force=False)
-        self.ask.record_search()
-        result = self.search.search(query)
+        result = self.processing.process(inbox)
         self.sync_workspace_manifest()
         return result
 

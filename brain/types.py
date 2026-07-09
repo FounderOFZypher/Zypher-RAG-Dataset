@@ -23,7 +23,7 @@ class Document:
 class ScoredDocument:
     document: Document
     score: float
-    source: str  # vector | metadata | graph
+    source: str  # vector | bm25 | metadata | graph | multi_vector | sql | code | api | plugin | ...
 
 
 @dataclass
@@ -31,6 +31,8 @@ class RetrievalResult:
     query: str
     documents: list[ScoredDocument]
     context: str
+    trace: dict | None = None
+    built_context: object | None = None
 
     @property
     def has_context(self) -> bool:

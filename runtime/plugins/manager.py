@@ -27,10 +27,23 @@ class PluginManager:
     def register(self, plugin_id: str, handler: Callable) -> None:
         self._registered[plugin_id] = handler
 
+    def get(self, plugin_id: str) -> Callable | None:
+        return self._registered.get(plugin_id)
+
+    def invoke(self, plugin_id: str, *args: Any, **kwargs: Any) -> Any:
+        handler = self._registered.get(plugin_id)
+        if handler is None:
+            raise KeyError(f"Plugin not registered: {plugin_id}")
+        return handler(*args, **kwargs)
+
+    def list_by_prefix(self, prefix: str) -> dict[str, Callable]:
+        return {k: v for k, v in self._registered.items() if k.startswith(prefix)}
+
     def stats(self) -> dict[str, Any]:
         return {
             "engine": "plugins",
             "status": "active",
+            "sdk_status": self._config.get("sdk", {}).get("status", "active"),
             "plugin_types": len(self._config.get("plugin_types", [])),
             "registered": list(self._registered.keys()),
             "hook_points": self._config.get("hook_points", []),

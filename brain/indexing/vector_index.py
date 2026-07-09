@@ -95,27 +95,53 @@ class VectorIndex:
 
     def index_document(self, doc: Document) -> None:
         """Index a single new document (no full rebuild)."""
+        self.upsert_document(doc)
+
+    def upsert_document(self, doc: Document) -> None:
+        """Insert or replace a document vector (incremental indexing)."""
         self._connect()
-        used: set[str] = set()
-        if self._collection.count() > 0:
-            existing = self._collection.get(include=[])
-            used = set(existing["ids"])
-        doc_id = self._unique_id(doc, used)
+        doc_id = doc.doc_id
         text = f"{doc.title}\n{doc.doc_type}\n{doc.content}"[:8000]
         embedding = self.encoder.encode([text])
+        meta = {
+            "title": doc.title,
+            "path": doc.path,
+            "category": doc.category,
+            "doc_type": doc.doc_type,
+            "hub": doc.hub,
+            "original_id": doc.doc_id,
+        }
+        try:
+            existing = self._collection.get(ids=[doc_id], include=[])
+            if existing and existing.get("ids"):
+                self._collection.update(
+                    ids=[doc_id],
+                    documents=[text],
+                    embeddings=embedding,
+                    metadatas=[meta],
+                )
+                return
+        except Exception:
+            pass
+        # also try delete-by-path duplicates then add
+        try:
+            self._collection.delete(ids=[doc_id])
+        except Exception:
+            pass
         self._collection.add(
             ids=[doc_id],
             documents=[text],
             embeddings=embedding,
-            metadatas=[{
-                "title": doc.title,
-                "path": doc.path,
-                "category": doc.category,
-                "doc_type": doc.doc_type,
-                "hub": doc.hub,
-                "original_id": doc.doc_id,
-            }],
+            metadatas=[meta],
         )
+
+    def delete_document(self, doc_id: str) -> None:
+        """Remove a document from the vector store."""
+        self._connect()
+        try:
+            self._collection.delete(ids=[doc_id])
+        except Exception:
+            pass
 
     def search(self, query: str, top_k: int = 10) -> list[ScoredDocument]:
         self._connect()

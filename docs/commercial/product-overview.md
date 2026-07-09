@@ -1,33 +1,33 @@
 # Coltex Mega RAG — Product Overview
 
-**Commercial RAG corpus — 100,000,000+ documents for production retrieval.**
+**Tagline:** The largest commercial RAG corpus — 100,000,000+ sellable knowledge files.
 
-Coltex Mega RAG is a GraphRAG-ready knowledge corpus: streaming-generated,
-embedding-ready, and packaged for commercial distribution as industry packs,
-shards, and the full Mega SKU.
+Coltex is rebuilt as a **commercial mega-scale RAG product**: a streaming-generated,
+graph-linked, embedding-ready knowledge corpus designed to power production retrieval
+systems — and to be sold as industry packs, shards, and full Mega SKUs.
 
 ---
 
-## Package contents
+## What you are buying
 
 | Deliverable | Description |
 |-------------|-------------|
-| **Document corpus** | 100,000,000+ original synthetic knowledge documents across 50+ domains |
-| **Vector chunks** | Chunked, metadata-rich JSONL for embedding stores |
+| **Document corpus** | 100,000,000+ original synthetic knowledge files across 50+ domains |
+| **Vector chunks** | Chunked, metadata-rich JSONL ready for embedding stores |
 | **Knowledge graph** | Typed edges (see_also, depends_on, routes_to) for GraphRAG |
-| **Catalog** | Machine-readable inventory for pack and shard distribution |
-| **Benchmarks** | FAQ pairs, retrieval gold sets, RAG evaluation sets |
-| **Provenance and audit** | Distribution compliance artifacts for enterprise buyers |
+| **Catalog** | Machine-readable inventory for marketplace and shard sales |
+| **Benchmarks** | FAQ pairs, retrieval gold, RAG eval sets |
+| **Provenance + audit** | Distribution compliance artifacts for enterprise buyers |
 
 ---
 
-## Technical capabilities
+## Why it is advanced
 
-1. **Streaming generation** — procedural generation without loading the full corpus into memory
-2. **GraphRAG-native** — hub routing and relationship edges with every document
-3. **Hybrid retrieval** — metadata fields (doc_type, category, hub, tags) for dense and sparse search
-4. **Quality gates** — substantive-content checks, duplicate caps, license and provenance audit
-5. **Commercial packs** — marketplace packs by domain, industry, and document type
+1. **Hyper-scale streaming** — procedural generation never loads the full corpus into memory
+2. **GraphRAG-native** — every document ships with hub routing and relationship edges
+3. **Hybrid retrieval ready** — metadata fields (doc_type, category, hub, tags) for dense + sparse search
+4. **Quality gates** — substantive-content checks, duplicate caps, license/provenance audit
+5. **Sellable shards** — marketplace packs by domain, industry, and document type
 6. **Evaluation harness** — recall@k and metadata accuracy benchmarks included
 
 ---

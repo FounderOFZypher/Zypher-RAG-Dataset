@@ -77,6 +77,12 @@ class WorkspaceManager:
 
         indexed = runtime.brain.index(force=True)
         steps.append("generate_embeddings")
+        if isinstance(indexed, dict):
+            indexed_vectors = indexed.get("vector", 0)
+            index_detail = indexed
+        else:
+            indexed_vectors = indexed
+            index_detail = {"vector": indexed}
 
         export_metadata_snapshot(ctx, runtime)
         steps.append("update_graph")
@@ -93,7 +99,9 @@ class WorkspaceManager:
         return {
             "status": "built",
             "workspace": ctx.name,
-            "indexed_vectors": indexed,
+            "indexed_vectors": indexed_vectors,
+            "indexes": index_detail,
+            "capabilities": runtime.brain.capabilities() if hasattr(runtime.brain, "capabilities") else {},
             "steps": steps,
         }
 

@@ -8,78 +8,92 @@ from typing import Any
 
 
 class ExplainEngine:
+    """Explainable retrieval across all advanced RAG sources."""
+
     def __init__(self, brain, monitor=None):
         self._brain = brain
         self._monitor = monitor
 
-    def explain(self, query: str, top_k: int = 5) -> dict[str, Any]:
+    def explain(self, query: str, top_k: int = 5, mode: str | None = None) -> dict[str, Any]:
         start = time.perf_counter()
+        result = self._brain.retrieve(query, mode=mode or "hybrid", top_k=top_k)
         pipeline = self._brain.retrieval
+        trace = getattr(result, "trace", None) or {}
 
-        vector_hits = pipeline.vector_index.search(query, top_k=top_k * 2)
-        metadata_hits = pipeline.metadata_index.search(query, top_k=top_k * 2)
-        graph_hits = pipeline.graph_index.search_from_seeds(vector_hits + metadata_hits)
-        merged = pipeline.reranker.merge(vector_hits, metadata_hits, graph_hits, top_k=top_k)
-
-        vector_ids = {s.document.doc_id for s in vector_hits}
-        metadata_ids = {s.document.doc_id for s in metadata_hits}
-        graph_ids = {s.document.doc_id for s in graph_hits}
+        # Re-run individual stages for factor attribution when available
+        stage_ids: dict[str, set[str]] = {}
+        try:
+            stage_ids["vector"] = {s.document.doc_id for s in pipeline.vector_index.search(query, top_k=top_k * 2)}
+        except Exception:
+            stage_ids["vector"] = set()
+        try:
+            stage_ids["metadata"] = {s.document.doc_id for s in pipeline.metadata_index.search(query, top_k=top_k * 2)}
+        except Exception:
+            stage_ids["metadata"] = set()
+        if getattr(pipeline, "bm25_index", None) is not None:
+            try:
+                stage_ids["bm25"] = {s.document.doc_id for s in pipeline.bm25_index.search(query, top_k=top_k * 2)}
+            except Exception:
+                stage_ids["bm25"] = set()
+        for name, retriever in (
+            ("sql", getattr(pipeline, "sql_retriever", None)),
+            ("code", getattr(pipeline, "code_retriever", None)),
+            ("api", getattr(pipeline, "api_retriever", None)),
+        ):
+            if retriever is not None:
+                try:
+                    stage_ids[name] = {s.document.doc_id for s in retriever.search(query, top_k=top_k * 2)}
+                except Exception:
+                    stage_ids[name] = set()
+        if getattr(pipeline, "multi_vector_index", None) is not None and pipeline.multi_vector_index.is_indexed:
+            try:
+                stage_ids["multi_vector"] = {
+                    s.document.doc_id for s in pipeline.multi_vector_index.search(query, top_k=top_k * 2)
+                }
+            except Exception:
+                stage_ids["multi_vector"] = set()
 
         query_lower = query.lower()
         query_tokens = set(re.findall(r"\w+", query_lower))
 
         explanations = []
-        for scored in merged:
+        for scored in result.documents:
             doc = scored.document
             reasons: list[dict[str, Any]] = []
+            source_parts = set(str(scored.source).split("+"))
 
-            if doc.doc_id in vector_ids:
-                v_score = next((s.score for s in vector_hits if s.document.doc_id == doc.doc_id), 0)
+            for stage, label in (
+                ("vector", "Vector Similarity"),
+                ("bm25", "BM25 Lexical Match"),
+                ("metadata", "Metadata Match"),
+                ("graph", "GraphRAG Expansion"),
+                ("multi_vector", "Multi-Vector Match"),
+                ("sql", "SQL Retrieval"),
+                ("code", "Code Retrieval"),
+                ("api", "API Retrieval"),
+                ("cross_encoder", "Cross-Encoder Rerank"),
+                ("lexical_rerank", "Lexical Rerank"),
+                ("plugin", "Plugin Search"),
+            ):
+                if stage in source_parts or doc.doc_id in stage_ids.get(stage, set()):
+                    reasons.append({
+                        "factor": stage,
+                        "label": label,
+                        "detail": f"Matched via {stage} retrieval",
+                    })
+
+            if doc.doc_type:
                 reasons.append({
-                    "factor": "vector_similarity",
-                    "label": "Similarity",
-                    "score": round(min(v_score * 100, 99), 1),
-                    "unit": "percent",
+                    "factor": "doc_type",
+                    "label": "Document Type",
+                    "detail": doc.doc_type,
                 })
-
-            if doc.doc_id in graph_ids:
-                reasons.append({
-                    "factor": "graph_relationship",
-                    "label": "Graph Relationship",
-                    "detail": "Connected via graph expansion from seed results",
-                })
-
-            if doc.doc_id in metadata_ids:
-                reasons.append({
-                    "factor": "metadata_match",
-                    "label": "Metadata Match",
-                    "detail": f"doc_type={doc.doc_type or 'unknown'}, hub={doc.hub or 'none'}",
-                })
-
             title_lower = (doc.title or "").lower()
             if any(t in title_lower for t in query_tokens if len(t) > 2):
                 reasons.append({"factor": "title_match", "label": "Title Match", "detail": doc.title})
 
-            if doc.doc_type and any(k in query_lower for k in ("api", "endpoint", "rest")):
-                if doc.doc_type == "api_reference":
-                    reasons.append({"factor": "api_match", "label": "API Match", "detail": "api_reference type"})
-
-            path_norm = doc.path.replace("\\", "/")
-            repo_hint = path_norm.split("/knowledge-corpus/")[0] if "/knowledge-corpus/" in path_norm else "knowledge-base"
-            reasons.append({"factor": "same_repository", "label": "Same Repository", "detail": repo_hint})
-
-            if doc.related:
-                reasons.append({
-                    "factor": "graph_links",
-                    "label": "Graph Links",
-                    "detail": f"{len(doc.related)} related documents",
-                })
-
-            reasons.append({
-                "factor": "content_relevance",
-                "label": "Content Match",
-                "detail": "Query terms present in document body",
-            })
+            if doc.hub:
+                reasons.append({"factor": "hub", "label": "Knowledge Hub", "detail": doc.hub})
 
             explanations.append({
                 "document_id": doc.doc_id,
@@ -97,11 +111,14 @@ class ExplainEngine:
         return {
             "engine": "explain",
             "query": query,
+            "mode": mode or "hybrid",
             "latency_ms": elapsed_ms,
+            "trace": trace,
+            "capabilities": self._brain.capabilities() if hasattr(self._brain, "capabilities") else {},
             "results": explanations,
         }
 
     @staticmethod
     def _summarize(reasons: list[dict[str, Any]]) -> str:
-        labels = [r["label"] for r in reasons[:4]]
+        labels = [r["label"] for r in reasons[:5]]
         return " · ".join(labels)

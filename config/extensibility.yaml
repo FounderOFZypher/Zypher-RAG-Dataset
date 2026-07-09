@@ -1,13 +1,13 @@
 # Coltex Extensibility
 # Plugin system, hooks, and SDK extension points
 
-version: 1.0.0
-updated: 2026-07-07
+version: 5.1.0
+updated: 2026-07-09
 
 philosophy: >
   Coltex is designed to be extended, not forked. Every major subsystem
   exposes registration points for connectors, transformers, intelligence
-  modules, exporters, and event subscribers.
+  modules, exporters, search algorithms, and event subscribers.
 
 plugin_types:
   - id: source_connector
@@ -31,6 +31,14 @@ plugin_types:
   - id: reasoning
     description: Custom intent, planner, or re-ranker modules
     examples: [domain_planner, policy_reranker, evidence_filter]
+
+  - id: search_algorithm
+    description: Custom retrieval backends plugged into hybrid search
+    examples: [custom_bm25, domain_router, proprietary_index]
+
+  - id: embedding_model
+    description: Alternate embedding encoders
+    examples: [e5_large, bge_base, custom_finetune]
 
   - id: governance
     description: Custom access, retention, or audit policies
@@ -58,21 +66,23 @@ hook_points:
   - on_health_rescore
   - on_scheduler_job
 
-# SDK surface (roadmap)
+# SDK surface — active
 sdk:
   language: python
-  status: planned
+  status: active
+  module: runtime.plugins.sdk
   registration:
-    - register_connector(id, ingest_fn, sync_fn)
-    - register_transform(id, transform_fn)
-    - register_intelligence(id, scan_fn)
-    - register_export(id, export_fn)
-    - subscribe_event(event_id, handler_fn)
-    - register_lifecycle_hook(state, hook_fn)
+    - register_connector(id, handler)
+    - register_processor(id, handler)
+    - register_curator(id, handler)
+    - register_embedding_model(id, handler)
+    - register_search_algorithm(id, handler)
+    - subscribe_event(event_id, handler)
 
 # Built-in extension without plugins
 built_in:
   - make targets and product configs
   - YAML manifests (events, lifecycle, scheduler, governance)
   - GraphRouter region-aware retrieval
+  - Advanced hybrid retrieval modes
   - Custom corpus expansion scripts

@@ -92,7 +92,10 @@ coltex deploy                 # show access URLs
 
 Docker: `docker compose up -d` — guide: [docs/deployment/self-hosted.md](docs/deployment/self-hosted.md)
 
----
+| Profile | Bind | Port |
+|---------|------|------|
+| `lan` | 0.0.0.0 | 8080 |
+| `production` | 0.0.0.0 | 443 |
 
 ## Capabilities
 

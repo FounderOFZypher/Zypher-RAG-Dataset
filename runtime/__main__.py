@@ -107,7 +107,36 @@ def cmd_ingest(args: argparse.Namespace) -> None:
 
 
 def cmd_search(args: argparse.Namespace) -> None:
-    print(json.dumps(_rt(args).universal_search(args.query), indent=2))
+    rt = _rt(args)
+    rt.brain.index(force=False)
+    filters = {}
+    if getattr(args, "doc_type", None):
+        filters["doc_type"] = args.doc_type
+    if getattr(args, "category", None):
+        filters["category"] = args.category
+    result = rt.universal_search(
+        args.query,
+        mode=getattr(args, "mode", None),
+        filters=filters or None,
+        top_k=getattr(args, "top_k", None),
+        explain=bool(getattr(args, "explain", False)),
+    )
+    rt.sync_workspace_manifest()
+    print(json.dumps(result, indent=2))
+
+
+def cmd_capabilities(args: argparse.Namespace) -> None:
+    print(json.dumps(_rt(args).capabilities(), indent=2))
+
+
+def cmd_federated(args: argparse.Namespace) -> None:
+    rt = _rt(args)
+    for path in getattr(args, "workspace", []) or []:
+        try:
+            rt.multi_workspace.add_workspace(path)
+        except Exception as exc:
+            print(json.dumps({"warning": str(exc), "workspace": path}))
+    print(json.dumps(rt.federated_search(args.query, mode=args.mode, top_k=args.top_k), indent=2))
 
 
 def cmd_ask(args: argparse.Namespace) -> None:
@@ -232,9 +261,29 @@ def main(argv: list[str] | None = None) -> None:
     p_ingest.add_argument("--source", default="upload")
     p_ingest.set_defaults(func=cmd_ingest)
 
-    p_search = sub.add_parser("search", help="Universal search")
+    p_search = sub.add_parser("search", help="Universal advanced search")
     p_search.add_argument("query")
+    p_search.add_argument(
+        "--mode",
+        default="hybrid",
+        choices=["hybrid", "vector", "graphrag", "bm25", "metadata", "sql", "code", "api", "multi_vector", "rrf"],
+        help="Retrieval mode",
+    )
+    p_search.add_argument("--top-k", type=int, default=None)
+    p_search.add_argument("--doc-type", default=None, help="Filter by document type")
+    p_search.add_argument("--category", default=None, help="Filter by category")
+    p_search.add_argument("--explain", action="store_true", help="Include retrieval trace")
     p_search.set_defaults(func=cmd_search)
+
+    p_caps = sub.add_parser("capabilities", help="Show advanced RAG capabilities")
+    p_caps.set_defaults(func=cmd_capabilities)
+
+    p_fed = sub.add_parser("federated-search", help="Search across multiple workspaces")
+    p_fed.add_argument("query")
+    p_fed.add_argument("--workspace", action="append", default=[], help="Path to .ctex workspace (repeatable)")
+    p_fed.add_argument("--mode", default="hybrid")
+    p_fed.add_argument("--top-k", type=int, default=10)
+    p_fed.set_defaults(func=cmd_federated)
 
     p_ask = sub.add_parser("ask", help="Ask Knowledge")
     p_ask.add_argument("question")
