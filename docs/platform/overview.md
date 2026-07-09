@@ -53,25 +53,25 @@ The **Mega RAG commercial dataset** is the foundation deliverable. The **Knowled
 
 ### Available today
 
-- **Mega RAG commercial product** — 100,000,000+ document target, sellable SKUs & packs
+- **Mega RAG commercial product** — 100,000,000+ document target, commercial SKUs and packs
+- **Advanced hybrid retrieval** — Vector, GraphRAG, BM25, Metadata, SQL, Code, API, Multi-Vector
+- **Cross-encoder rerank + context compression** — production answer assembly
+- **Explainable retrieval · incremental indexing · multi-workspace · plugins**
 - **Streaming corpus pipeline** — `make product-mega` / `product-mega-smoke`
 - **Knowledge graph** — hubs, routes, typed relationships, GraphRAG
-- **Search & retrieval** — hybrid RAG with GraphRouter
-- **Quality & audit** — distribution audit, EULA, benchmarks, provenance
+- **Quality and audit** — distribution audit, EULA, benchmarks, provenance
 - **Marketplace packs** — RAG core, languages, cloud, security, architecture
-- **Memory tier model** — working, episodic, semantic, procedural (corpus)
+
+See [Advanced retrieval](advanced-retrieval.md) · [Intelligence Engine](intelligence-engine.md) · [Roadmap](roadmap.md)
 
 ### On the roadmap
 
-- **Knowledge Intelligence Engine** — discover, detect, recommend, improve
+- **Intelligence Engine** — discover, detect, recommend, improve
 - **Knowledge Health** — operational dashboard scores
-- **Event system & scheduler** — event-driven pipeline, automated jobs
+- **Event system and scheduler** — event-driven pipeline, automated jobs
 - **Reasoning layer** — full intent-to-evidence pipeline
-- **Knowledge lifecycle & AI governance** — state machine, retention, audit
-- **Extensibility** — plugins, hooks, SDK
-- **Knowledge Studio, connectors, sync** — experience and integration layer
-
-See [Knowledge OS](knowledge-os.md) · [Intelligence Engine](intelligence-engine.md) · [Roadmap](roadmap.md)
+- **Knowledge lifecycle and AI governance** — state machine, retention, audit
+- **Console, connectors, sync** — experience and integration layer
 
 ---
 
